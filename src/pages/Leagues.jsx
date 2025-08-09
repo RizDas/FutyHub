@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled, { keyframes, createGlobalStyle } from "styled-components";
 import {
   Trophy,
@@ -14,12 +14,10 @@ import {
 } from "lucide-react";
 
 export default function Leagues() {
-  const [selectedLeague, setSelectedLeague] = useState(null);
-
   const leagues = [
     {
       id: 1,
-      name: "Premier Division",
+      name: "Premier League",
       country: "England",
       season: "2024-25",
       teams: 20,
@@ -28,62 +26,20 @@ export default function Leagues() {
       gradient: "linear-gradient(135deg, #00f5ff, #0084ff)",
       bgColor: "rgba(0, 245, 255, 0.1)",
       borderColor: "#00f5ff",
-      teamsData: [
-        {
-          id: 1,
-          name: "Manchester United",
-          city: "Manchester",
-          founded: 1878,
-          stadium: "Old Trafford",
-          players: 25,
-          logo: Shield,
-          colors: "#dc143c",
-        },
-        {
-          id: 2,
-          name: "Arsenal",
-          city: "London",
-          founded: 1886,
-          stadium: "Emirates Stadium",
-          players: 28,
-          logo: Zap,
-          colors: "#ef0107",
-        },
-      ],
+      route: "epl",
     },
     {
       id: 2,
-      name: "Liga Profesional",
-      country: "Argentina",
-      season: "2024",
-      teams: 28,
-      founded: 1931,
+      name: "La Liga",
+      country: "Spain",
+      season: "2024-25",
+      teams: 20,
+      founded: 1929,
       icon: Star,
       gradient: "linear-gradient(135deg, #ff6b35, #f7931e)",
       bgColor: "rgba(255, 107, 53, 0.1)",
       borderColor: "#ff6b35",
-      teamsData: [
-        {
-          id: 3,
-          name: "Boca Juniors",
-          city: "Buenos Aires",
-          founded: 1905,
-          stadium: "La Bombonera",
-          players: 30,
-          logo: Trophy,
-          colors: "#003f7f",
-        },
-        {
-          id: 4,
-          name: "River Plate",
-          city: "Buenos Aires",
-          founded: 1901,
-          stadium: "El Monumental",
-          players: 29,
-          logo: Crown,
-          colors: "#ffffff",
-        },
-      ],
+      route: "laliga",
     },
   ];
 
@@ -156,12 +112,7 @@ export default function Leagues() {
                 gradient={league.gradient}
                 bgColor={league.bgColor}
                 borderColor={league.borderColor}
-                onClick={() =>
-                  setSelectedLeague(
-                    selectedLeague === league.id ? null : league.id
-                  )
-                }
-                isSelected={selectedLeague === league.id}
+                onClick={() => (window.location.href = `/${league.route}`)}
               >
                 <LeagueHeader>
                   <LeagueIcon>
@@ -181,38 +132,10 @@ export default function Leagues() {
                       </span>
                     </LeagueDetails>
                   </LeagueInfo>
-                  <ExpandIcon isSelected={selectedLeague === league.id}>
+                  <ExpandIcon>
                     <ChevronRight size={24} />
                   </ExpandIcon>
                 </LeagueHeader>
-
-                <TeamsSection isVisible={selectedLeague === league.id}>
-                  <TeamsTitle>Teams in {league.name}</TeamsTitle>
-                  <TeamsGrid>
-                    {league.teamsData.map((team) => (
-                      <TeamCard key={team.id} teamColor={team.colors}>
-                        <TeamLogo>
-                          <team.logo size={32} />
-                        </TeamLogo>
-                        <TeamInfo>
-                          <h4>{team.name}</h4>
-                          <TeamMeta>
-                            <span>
-                              <MapPin size={12} /> {team.city}
-                            </span>
-                            <span>
-                              <Calendar size={12} /> Founded {team.founded}
-                            </span>
-                            <span>
-                              <Users size={12} /> {team.players} players
-                            </span>
-                          </TeamMeta>
-                          <Stadium>{team.stadium}</Stadium>
-                        </TeamInfo>
-                      </TeamCard>
-                    ))}
-                  </TeamsGrid>
-                </TeamsSection>
               </LeagueCard>
             ))}
           </LeaguesGrid>
@@ -221,20 +144,22 @@ export default function Leagues() {
             <SectionTitle>League Statistics</SectionTitle>
             <StatsGrid>
               <StatCard>
-                <span className="number">2</span>
+                <span className="number">{leagues.length}</span>
                 <div className="label">Active Leagues</div>
               </StatCard>
               <StatCard>
-                <span className="number">4</span>
-                <div className="label">Featured Teams</div>
+                <span className="number">
+                  {leagues.reduce((total, league) => total + league.teams, 0)}
+                </span>
+                <div className="label">Total Teams</div>
               </StatCard>
               <StatCard>
-                <span className="number">112</span>
+                <span className="number">58</span>
+                <div className="label">Countries</div>
+              </StatCard>
+              <StatCard>
+                <span className="number">850+</span>
                 <div className="label">Total Players</div>
-              </StatCard>
-              <StatCard>
-                <span className="number">4</span>
-                <div className="label">Historic Stadiums</div>
               </StatCard>
             </StatsGrid>
           </StatsSection>
@@ -499,16 +424,14 @@ const ExpandIcon = styled.div`
   transition: transform 0.3s ease;
   color: #94a3b8;
 
-  ${(props) =>
-    props.isSelected &&
-    `
-    transform: rotate(90deg);
+  &:hover {
     color: #00f5ff;
-  `}
+    transform: translateX(5px);
+  }
 `;
 
 const TeamsSection = styled.div`
-  max-height: ${(props) => (props.isVisible ? "500px" : "0")};
+  max-height: ${(props) => (props.isVisible ? "2000px" : "0")};
   opacity: ${(props) => (props.isVisible ? "1" : "0")};
   overflow: hidden;
   transition: all 0.4s ease;
@@ -528,6 +451,8 @@ const TeamsGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
   padding: 0 2rem 2rem;
+  max-height: 1800px;
+  overflow-y: auto;
 `;
 
 const TeamCard = styled.div`
