@@ -11,6 +11,8 @@ import {
   Globe,
   Crown,
   Zap,
+  Mountain,
+  Flame,
 } from "lucide-react";
 
 export default function Leagues() {
@@ -41,6 +43,45 @@ export default function Leagues() {
       borderColor: "#ff6b35",
       route: "laliga",
     },
+    {
+      id: 3,
+      name: "Serie A",
+      country: "Italy",
+      season: "2024-25",
+      teams: 20,
+      founded: 1898,
+      icon: Shield,
+      gradient: "linear-gradient(135deg, #22c55e, #16a34a)",
+      bgColor: "rgba(34, 197, 94, 0.1)",
+      borderColor: "#22c55e",
+      route: "seriea",
+    },
+    {
+      id: 4,
+      name: "Bundesliga",
+      country: "Germany",
+      season: "2024-25",
+      teams: 18,
+      founded: 1963,
+      icon: Mountain,
+      gradient: "linear-gradient(135deg, #dc2626, #991b1b)",
+      bgColor: "rgba(220, 38, 38, 0.1)",
+      borderColor: "#dc2626",
+      route: "bundesliga",
+    },
+    {
+      id: 5,
+      name: "Ligue 1",
+      country: "France",
+      season: "2024-25",
+      teams: 18,
+      founded: 1932,
+      icon: Flame,
+      gradient: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+      bgColor: "rgba(139, 92, 246, 0.1)",
+      borderColor: "#8b5cf6",
+      route: "ligue1",
+    },
   ];
 
   return (
@@ -66,14 +107,36 @@ export default function Leagues() {
             }}
           />
           <Orb
-            color="radial-gradient(circle, #ffd700, transparent)"
-            duration="30"
-            delay="10"
+            color="radial-gradient(circle, #22c55e, transparent)"
+            duration="22"
+            delay="7"
+            style={{
+              top: "70%",
+              left: "50%",
+              width: "350px",
+              height: "350px",
+            }}
+          />
+          <Orb
+            color="radial-gradient(circle, #dc2626, transparent)"
+            duration="28"
+            delay="12"
+            style={{
+              bottom: "20%",
+              right: "30%",
+              width: "320px",
+              height: "320px",
+            }}
+          />
+          <Orb
+            color="radial-gradient(circle, #8b5cf6, transparent)"
+            duration="24"
+            delay="3"
             style={{
               bottom: "10%",
               left: "20%",
-              width: "350px",
-              height: "350px",
+              width: "380px",
+              height: "380px",
             }}
           />
         </BackgroundOrbs>
@@ -100,8 +163,9 @@ export default function Leagues() {
           <HeroSection>
             <Title>Football Leagues</Title>
             <Subtitle>
-              Explore leagues from around the world. Discover teams, standings,
-              and dive deep into the competitions that define football.
+              Explore the top leagues from around the world. Discover teams,
+              standings, and dive deep into the competitions that define
+              football.
             </Subtitle>
           </HeroSection>
 
@@ -113,6 +177,7 @@ export default function Leagues() {
                 bgColor={league.bgColor}
                 borderColor={league.borderColor}
                 onClick={() => (window.location.href = `/${league.route}`)}
+                delay={index * 0.1}
               >
                 <LeagueHeader>
                   <LeagueIcon>
@@ -154,11 +219,11 @@ export default function Leagues() {
                 <div className="label">Total Teams</div>
               </StatCard>
               <StatCard>
-                <span className="number">58</span>
+                <span className="number">5</span>
                 <div className="label">Countries</div>
               </StatCard>
               <StatCard>
-                <span className="number">850+</span>
+                <span className="number">1,800+</span>
                 <div className="label">Total Players</div>
               </StatCard>
             </StatsGrid>
@@ -326,7 +391,14 @@ const HeroSection = styled.section`
 const Title = styled.h1`
   font-size: clamp(3rem, 6vw, 5rem);
   font-weight: 900;
-  background: linear-gradient(135deg, #00f5ff, #ff6b35, #ffd700);
+  background: linear-gradient(
+    135deg,
+    #00f5ff,
+    #ff6b35,
+    #22c55e,
+    #dc2626,
+    #8b5cf6
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -358,6 +430,7 @@ const LeagueCard = styled.div`
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
+  animation: ${fadeInUp} 1s ease-out ${(props) => props.delay}s both;
 
   &:hover {
     transform: translateY(-5px);
@@ -388,7 +461,7 @@ const LeagueIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #00f5ff;
+  color: ${(props) => props.borderColor || "#00f5ff"};
 `;
 
 const LeagueInfo = styled.div`
@@ -425,91 +498,9 @@ const ExpandIcon = styled.div`
   color: #94a3b8;
 
   &:hover {
-    color: #00f5ff;
+    color: ${(props) => props.borderColor || "#00f5ff"};
     transform: translateX(5px);
   }
-`;
-
-const TeamsSection = styled.div`
-  max-height: ${(props) => (props.isVisible ? "2000px" : "0")};
-  opacity: ${(props) => (props.isVisible ? "1" : "0")};
-  overflow: hidden;
-  transition: all 0.4s ease;
-  border-top: ${(props) =>
-    props.isVisible ? "1px solid rgba(255, 255, 255, 0.1)" : "none"};
-`;
-
-const TeamsTitle = styled.h4`
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 2rem 2rem 1rem;
-`;
-
-const TeamsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  padding: 0 2rem 2rem;
-  max-height: 1800px;
-  overflow-y: auto;
-`;
-
-const TeamCard = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-3px);
-    background: rgba(255, 255, 255, 0.08);
-    border-color: ${(props) => props.teamColor}66;
-  }
-`;
-
-const TeamLogo = styled.div`
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #00f5ff;
-  margin-bottom: 1rem;
-`;
-
-const TeamInfo = styled.div`
-  h4 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 0.8rem;
-  }
-`;
-
-const TeamMeta = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 0.8rem;
-
-  span {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #94a3b8;
-    font-size: 0.85rem;
-  }
-`;
-
-const Stadium = styled.div`
-  color: #cbd5e1;
-  font-weight: 500;
-  font-size: 0.9rem;
 `;
 
 const StatsSection = styled.section`

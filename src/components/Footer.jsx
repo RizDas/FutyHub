@@ -52,6 +52,7 @@ const Foot = styled.footer`
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(0, 245, 255, 0.1);
   padding: 1.5rem 0;
+  font-family: monospace, sans-serif;
 `;
 
 const FooterContent = styled.div`
