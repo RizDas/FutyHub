@@ -10,8 +10,24 @@ import {
   Star,
   TrendingUp,
 } from "lucide-react";
+import { Provider } from "react-redux";
+import { createStore, combineReducers } from "@reduxjs/toolkit";
+import teamReducer from "../features/teams/teamslice";
 
-export default function Home() {
+const HomeWrapper = () => {
+  const rootReducer = combineReducers({
+    content: teamReducer,
+  });
+  const store = createStore(rootReducer);
+
+  return (
+    <Provider store={store}>
+      <Home />
+    </Provider>
+  );
+};
+
+export function Home() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const features = [
@@ -504,3 +520,5 @@ const CTAButton = styled.button`
     box-shadow: 0 15px 35px rgba(255, 107, 53, 0.4);
   }
 `;
+
+export default HomeWrapper;

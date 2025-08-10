@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes, createGlobalStyle } from "styled-components";
 import {
   Trophy,
@@ -13,11 +13,51 @@ import {
   Zap,
   ArrowLeft,
 } from "lucide-react";
+import { Provider, useDispatch } from "react-redux";
+import db from "../../firebase";
+import { setTeams } from "../../features/teams/teamslice";
+import { createStore, combineReducers } from "@reduxjs/toolkit";
+import teamReducer from "../../features/teams/teamslice";
 
 // Import EPL teams
 import * as EPLTeams from "../../../library/epl/index.js";
 
-export default function Epl() {
+const EplWrapper = () => {
+  const rootReducer = combineReducers({
+    content: teamReducer,
+  });
+  const store = createStore(rootReducer);
+
+  return (
+    <Provider store={store}>
+      <Epl />
+    </Provider>
+  );
+};
+
+export function Epl() {
+  const dispatch = useDispatch();
+  let epl = [];
+
+  useEffect(() => {
+    db.collection("teams").onSnapshot((snapshot) => {
+      snapshot.docs.map((doc) => {
+        switch (doc.data().league) {
+          case "epl":
+            epl = [...epl, { id: doc.id, ...doc.data() }];
+            console.log(epl);
+            break;
+        }
+      });
+
+      dispatch(
+        setTeams({
+          epl: epl,
+        })
+      );
+    });
+  });
+
   const [searchTerm, setSearchTerm] = useState("");
 
   // Convert imported team objects to the format needed for the component
@@ -29,7 +69,7 @@ export default function Epl() {
       founded: team.founded,
       stadium: team.stadium,
       players: Math.floor(Math.random() * 10) + 20,
-      logo: Shield,
+      logo: team.logo || "/images/epl.svg", // Use team logo or fallback to EPL logo
       colors: "#00f5ff",
       position: index + 1, // League position
       points: Math.floor(Math.random() * 30) + 50, // Random points
@@ -105,9 +145,14 @@ export default function Epl() {
 
           <HeroSection>
             <LeagueIconLarge>
-              <Crown size={80} />
+              <EPLLogo src="/images/epl_white.svg" alt="EPL" />
             </LeagueIconLarge>
-            <Title>Premier League</Title>
+            <Title>
+              <EPLText
+                src="/images/epl_text_white.svg"
+                alt="Premier League"
+              ></EPLText>
+            </Title>
             <LeagueInfo>
               <InfoItem>
                 <MapPin size={20} />
@@ -148,7 +193,11 @@ export default function Epl() {
                 <TeamCard key={team.id} delay={index * 0.1}>
                   <TeamRank>#{team.position}</TeamRank>
                   <TeamLogo>
-                    <team.logo size={40} />
+                    {typeof team.logo === "string" ? (
+                      <TeamLogoImage src="/images/epl.jpg" alt={team.name} />
+                    ) : (
+                      <team.logo size={40} />
+                    )}
                   </TeamLogo>
                   <TeamInfo>
                     <TeamName>{team.name}</TeamName>
@@ -382,27 +431,36 @@ const HeroSection = styled.section`
 `;
 
 const LeagueIconLarge = styled.div`
-  width: 120px;
-  height: 120px;
+  width: 220px;
+  height: 220px;
   border-radius: 30px;
-  background: rgba(0, 245, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #00f5ff;
   margin: 0 auto 2rem;
-  animation: ${float} 6s ease-in-out infinite;
+  padding: 1rem;
+  margin-bottom: 40px;
 `;
 
-const Title = styled.h1`
-  font-size: clamp(3rem, 6vw, 5rem);
-  font-weight: 900;
-  background: linear-gradient(135deg, #00f5ff, #0084ff, #38bdf8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
+const EPLLogo = styled.img`
+  width: 250px;
+  height: 250px;
+  object-fit: contain;
+  filter: brightness(1.2) contrast(1.1);
+`;
+
+const Title = styled.div`
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+`;
+
+const EPLText = styled.img`
+  height: 800px;
+  object-fit: contain;
+  filter: brightness(1.2) contrast(1.1);
 `;
 
 const LeagueInfo = styled.div`
@@ -553,6 +611,14 @@ const TeamLogo = styled.div`
   justify-content: center;
   color: #00f5ff;
   margin-bottom: 1.5rem;
+  padding: 0.8rem;
+`;
+
+const TeamLogoImage = styled.img`
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: brightness(1.1) contrast(1.05);
 `;
 
 const TeamInfo = styled.div`
@@ -664,3 +730,5 @@ const StatCard = styled.div`
     margin-top: 0.5rem;
   }
 `;
+
+export default EplWrapper;
