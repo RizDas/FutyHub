@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled, { keyframes, createGlobalStyle } from "styled-components";
 import {
   Search,
@@ -27,8 +27,152 @@ const HomeWrapper = () => {
   );
 };
 
+// Counter Animation Hook
+const useCountAnimation = (endValue, duration, isVisible) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    let startTime;
+    let animationFrame;
+
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+
+      // Easing function for smooth animation
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const currentCount = Math.floor(endValue * easeOutQuart);
+
+      setCount(currentCount);
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [endValue, duration, isVisible]);
+
+  return count;
+};
+
+// Intersection Observer Hook
+const useIntersectionObserver = (options = {}) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const elementRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setIsVisible(true);
+          setHasAnimated(true);
+        }
+      },
+      {
+        threshold: 0.3,
+        ...options,
+      }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => {
+      if (elementRef.current) {
+        observer.unobserve(elementRef.current);
+      }
+    };
+  }, [hasAnimated, options]);
+
+  return [elementRef, isVisible];
+};
+
+// Animated Stat Card Component
+const AnimatedStatCard = ({ number, label, duration = 3000 }) => {
+  const [ref, isVisible] = useIntersectionObserver();
+
+  // Extract numeric value and suffix
+  const numericValue = parseInt(number.replace(/[^0-9]/g, ""));
+  const suffix = number.replace(/[0-9]/g, "");
+
+  const animatedCount = useCountAnimation(numericValue, duration, isVisible);
+
+  return (
+    <StatCard ref={ref}>
+      <span className="number">
+        {animatedCount}
+        {suffix}
+      </span>
+      <div className="label">{label}</div>
+    </StatCard>
+  );
+};
+
+// Tilt Component
+const TiltCard = ({ children, gradient, iconColor, className }) => {
+  const cardRef = useRef(null);
+  const [transform, setTransform] = useState("");
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+
+    const card = cardRef.current;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = (y - centerY) / 10;
+    const rotateY = (centerX - x) / 10;
+
+    setTransform(
+      `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`
+    );
+  };
+
+  const handleMouseLeave = () => {
+    setTransform(
+      "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)"
+    );
+  };
+
+  return (
+    <FeatureCard
+      ref={cardRef}
+      gradient={gradient}
+      iconColor={iconColor}
+      className={className}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ transform }}
+    >
+      {children}
+    </FeatureCard>
+  );
+};
+
 export function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+
+  const statsData = [
+    { number: "10+", label: "Football Leagues", duration: 2500 },
+    { number: "185+", label: "Teams Covered", duration: 3000 },
+    { number: "2000+", label: "Player Profiles", duration: 3200 },
+    { number: "10+", label: "Countries", duration: 2500 },
+  ];
 
   const features = [
     {
@@ -129,7 +273,7 @@ export function Home() {
               <SearchIcon />
               <SearchInput
                 type="text"
-                placeholder="Search teams, leagues, or players..."
+                placeholder="Search teams or leagues..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -141,7 +285,7 @@ export function Home() {
 
           <FeaturesSection>
             {features.map((feature, index) => (
-              <FeatureCard
+              <TiltCard
                 key={index}
                 gradient={feature.gradient}
                 iconColor={feature.iconColor}
@@ -149,32 +293,24 @@ export function Home() {
                 <feature.icon className="icon" />
                 <h3>{feature.title}</h3>
                 <p>{feature.description}</p>
-              </FeatureCard>
+              </TiltCard>
             ))}
           </FeaturesSection>
 
           <StatsSection>
-            <StatCard>
-              <span className="number">500+</span>
-              <div className="label">Football Leagues</div>
-            </StatCard>
-            <StatCard>
-              <span className="number">15K+</span>
-              <div className="label">Teams Covered</div>
-            </StatCard>
-            <StatCard>
-              <span className="number">200K+</span>
-              <div className="label">Player Profiles</div>
-            </StatCard>
-            <StatCard>
-              <span className="number">50+</span>
-              <div className="label">Countries</div>
-            </StatCard>
+            {statsData.map((stat, index) => (
+              <AnimatedStatCard
+                key={index}
+                number={stat.number}
+                label={stat.label}
+                duration={stat.duration}
+              />
+            ))}
           </StatsSection>
 
           <CTASection>
-            <CTAButton>
-              Start Exploring <Star size={20} />
+            <CTAButton onClick={() => (location.href = "/leagues")}>
+              Start Exploring <ArrowRight size={25} />
             </CTAButton>
           </CTASection>
         </MainContent>
@@ -427,9 +563,11 @@ const FeatureCard = styled.div`
   border-radius: 20px;
   padding: 2.5rem 2rem;
   text-align: left;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  transform-style: preserve-3d;
 
   &::before {
     content: "";
@@ -441,10 +579,31 @@ const FeatureCard = styled.div`
     background: ${(props) => props.gradient};
   }
 
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+
   &:hover {
-    transform: translateY(-10px);
     background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
   }
 
   .icon {
@@ -453,6 +612,12 @@ const FeatureCard = styled.div`
     color: ${(props) => props.iconColor};
     margin-bottom: 1.5rem;
     animation: ${pulse} 2s ease-in-out infinite;
+    transition: transform 0.4s ease;
+    transform-style: preserve-3d;
+  }
+
+  &:hover .icon {
+    transform: translateZ(20px) rotateY(10deg);
   }
 
   h3 {
@@ -460,11 +625,23 @@ const FeatureCard = styled.div`
     font-weight: 700;
     color: white;
     margin-bottom: 1rem;
+    transition: transform 0.4s ease;
+    transform-style: preserve-3d;
+  }
+
+  &:hover h3 {
+    transform: translateZ(15px);
   }
 
   p {
     color: #94a3b8;
     line-height: 1.6;
+    transition: transform 0.4s ease;
+    transform-style: preserve-3d;
+  }
+
+  &:hover p {
+    transform: translateZ(10px);
   }
 `;
 
@@ -478,6 +655,8 @@ const StatsSection = styled.section`
 
 const StatCard = styled.div`
   text-align: center;
+  opacity: 0;
+  animation: ${fadeInUp} 1s ease-out 0.6s both;
 
   .number {
     font-size: 3rem;
@@ -487,12 +666,25 @@ const StatCard = styled.div`
     -webkit-text-fill-color: transparent;
     background-clip: text;
     display: block;
+    transition: all 0.3s ease;
+    min-height: 4rem;
+    line-height: 1;
   }
 
   .label {
     color: #cbd5e1;
     font-weight: 500;
     margin-top: 0.5rem;
+    transition: color 0.3s ease;
+  }
+
+  &:hover .number {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(0, 245, 255, 0.5));
+  }
+
+  &:hover .label {
+    color: #e2e8f0;
   }
 `;
 

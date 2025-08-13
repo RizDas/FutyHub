@@ -32,7 +32,7 @@ export default function Leagues() {
     },
     {
       id: 2,
-      name: "La Liga",
+      name: "La Liga #Under_Construction",
       country: "Spain",
       season: "2024-25",
       teams: 20,
@@ -45,7 +45,7 @@ export default function Leagues() {
     },
     {
       id: 3,
-      name: "Serie A",
+      name: "Serie A #Under_Construction",
       country: "Italy",
       season: "2024-25",
       teams: 20,
@@ -58,7 +58,7 @@ export default function Leagues() {
     },
     {
       id: 4,
-      name: "Bundesliga",
+      name: "Bundesliga #Under_Construction",
       country: "Germany",
       season: "2024-25",
       teams: 18,
@@ -71,7 +71,7 @@ export default function Leagues() {
     },
     {
       id: 5,
-      name: "Ligue 1",
+      name: "Ligue 1 #Under_Construction",
       country: "France",
       season: "2024-25",
       teams: 18,

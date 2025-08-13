@@ -5,7 +5,6 @@ import {
   Users,
   MapPin,
   Calendar,
-  Star,
   ChevronLeft,
   Shield,
   Globe,
@@ -16,73 +15,90 @@ import {
 import { Provider, useDispatch } from "react-redux";
 import db from "../../firebase";
 import { setTeams } from "../../features/teams/teamslice";
-import { createStore, combineReducers } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import teamReducer from "../../features/teams/teamslice";
 
-// Import EPL teams
-import * as EPLTeams from "../../../library/epl/index.js";
+const store = configureStore({
+  reducer: {
+    teams: teamReducer,
+  },
+});
 
-const EplWrapper = () => {
-  const rootReducer = combineReducers({
-    content: teamReducer,
-  });
-  const store = createStore(rootReducer);
-
-  return (
-    <Provider store={store}>
-      <Epl />
-    </Provider>
-  );
-};
-
-export function Epl() {
+function EplInner() {
   const dispatch = useDispatch();
-  let epl = [];
-
-  useEffect(() => {
-    db.collection("teams").onSnapshot((snapshot) => {
-      snapshot.docs.map((doc) => {
-        switch (doc.data().league) {
-          case "epl":
-            epl = [...epl, { id: doc.id, ...doc.data() }];
-            console.log(epl);
-            break;
-        }
-      });
-
-      dispatch(
-        setTeams({
-          epl: epl,
-        })
-      );
-    });
-  });
-
+  const [eplFromDb, setEplFromDb] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Convert imported team objects to the format needed for the component
-  const formatTeamsData = (teamsObject) => {
-    return Object.entries(teamsObject).map(([key, team], index) => ({
-      id: index + 1,
-      name: key.replace(/([A-Z])/g, " $1").trim(),
-      city: team.city,
-      founded: team.founded,
-      stadium: team.stadium,
-      players: Math.floor(Math.random() * 10) + 20,
-      logo: team.logo || "/images/epl.svg", // Use team logo or fallback to EPL logo
-      colors: "#00f5ff",
-      position: index + 1, // League position
-      points: Math.floor(Math.random() * 30) + 50, // Random points
-      played: Math.floor(Math.random() * 5) + 25, // Games played
-    }));
-  };
+  const effectiveTeams = eplFromDb;
 
-  const teams = formatTeamsData(EPLTeams);
-  const filteredTeams = teams.filter(
-    (team) =>
-      team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      team.city.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    if (!db || typeof db.collection !== "function") {
+      console.warn(" 'db.collection' not available!");
+      setLoading(false);
+      return;
+    }
+
+    const unsubscribe = db.collection("teams").onSnapshot(
+      (snapshot) => {
+        try {
+          const fetchedTeams = snapshot.docs
+            .map((doc) => ({ id: doc.id, ...doc.data() }))
+            .filter(
+              (t) =>
+                t.league === "epl" ||
+                (t.league && t.league.toLowerCase() === "epl")
+            );
+
+          if (fetchedTeams.length > 0) {
+            const normalized = fetchedTeams.map((team, index) => ({
+              id: team.id ?? index + 1,
+              name: team.name ?? team.clubName ?? `Team ${index + 1}`,
+              city: team.city ?? team.town ?? "Unknown",
+              founded: team.founded ?? "—",
+              stadium: team.stadium ?? "—",
+              players: team.players ?? Math.floor(Math.random() * 10) + 20,
+              logo: team.logo ?? "/images/epl.svg",
+              colors: team.colors ?? "#00f5ff",
+            }));
+
+            setEplFromDb(normalized);
+            dispatch(setTeams({ epl: normalized }));
+          } else {
+            setEplFromDb([]);
+          }
+        } catch (err) {
+          console.error("Error parsing teams snapshot:", err);
+        } finally {
+          setLoading(false);
+        }
+      },
+      (error) => {
+        console.error("Firestore onSnapshot error:", error);
+        setLoading(false);
+      }
+    );
+
+    return () => {
+      if (typeof unsubscribe === "function") unsubscribe();
+    };
+  }, [dispatch]);
+
+  const filteredTeams = effectiveTeams.filter((team) => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return true;
+    const name = (team.name || "").toString().toLowerCase();
+    const city = (team.city || "").toString().toLowerCase();
+    return name.includes(term) || city.includes(term);
+  });
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", padding: "20px" }}>
+        <span>Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -148,10 +164,7 @@ export function Epl() {
               <EPLLogo src="/images/epl_white.svg" alt="EPL" />
             </LeagueIconLarge>
             <Title>
-              <EPLText
-                src="/images/epl_text_white.svg"
-                alt="Premier League"
-              ></EPLText>
+              <EPLText src="/images/epl_text_white.svg" alt="Premier League" />
             </Title>
             <LeagueInfo>
               <InfoItem>
@@ -164,7 +177,7 @@ export function Epl() {
               </InfoItem>
               <InfoItem>
                 <Users size={20} />
-                <span>{teams.length} Teams</span>
+                <span>{effectiveTeams.length} Teams</span>
               </InfoItem>
               <InfoItem>
                 <Trophy size={20} />
@@ -190,13 +203,22 @@ export function Epl() {
             <SectionTitle>All Teams</SectionTitle>
             <TeamsGrid>
               {filteredTeams.map((team, index) => (
-                <TeamCard key={team.id} delay={index * 0.1}>
-                  <TeamRank>#{team.position}</TeamRank>
+                <TeamCard
+                  key={team.id ?? `${team.name}-${index}`}
+                  delay={index * 0.1}
+                >
                   <TeamLogo>
                     {typeof team.logo === "string" ? (
-                      <TeamLogoImage src="/images/epl.jpg" alt={team.name} />
+                      <TeamLogoImage
+                        src={team.logo || "/images/epl.jpg"}
+                        alt={team.name}
+                      />
+                    ) : React.isValidElement(team.logo) ? (
+                      team.logo
+                    ) : typeof team.logo === "function" ? (
+                      React.createElement(team.logo, { size: 40 })
                     ) : (
-                      <team.logo size={40} />
+                      <TeamLogoImage src="/images/epl.jpg" alt={team.name} />
                     )}
                   </TeamLogo>
                   <TeamInfo>
@@ -216,16 +238,6 @@ export function Epl() {
                       </MetaItem>
                     </TeamMeta>
                     <Stadium>{team.stadium}</Stadium>
-                    <TeamStats>
-                      <StatItem>
-                        <span className="label">Points</span>
-                        <span className="value">{team.points}</span>
-                      </StatItem>
-                      <StatItem>
-                        <span className="label">Played</span>
-                        <span className="value">{team.played}</span>
-                      </StatItem>
-                    </TeamStats>
                   </TeamInfo>
                 </TeamCard>
               ))}
@@ -236,18 +248,27 @@ export function Epl() {
             <SectionTitle>League Overview</SectionTitle>
             <StatsGrid>
               <StatCard>
-                <span className="number">{teams.length}</span>
+                <span className="number">{effectiveTeams.length}</span>
                 <div className="label">Total Teams</div>
               </StatCard>
               <StatCard>
                 <span className="number">
-                  {teams.reduce((sum, team) => sum + team.players, 0)}
+                  {effectiveTeams.reduce(
+                    (sum, team) => sum + (team.players || 0),
+                    0
+                  )}
                 </span>
                 <div className="label">Total Players</div>
               </StatCard>
               <StatCard>
                 <span className="number">
-                  {new Set(teams.map((team) => team.city)).size}
+                  {
+                    new Set(
+                      effectiveTeams.map((team) =>
+                        (team.city || "").toLowerCase()
+                      )
+                    ).size
+                  }
                 </span>
                 <div className="label">Cities</div>
               </StatCard>
@@ -262,6 +283,16 @@ export function Epl() {
     </>
   );
 }
+
+export function Epl() {
+  return (
+    <Provider store={store}>
+      <EplInner />
+    </Provider>
+  );
+}
+
+export default Epl;
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -562,10 +593,10 @@ const TeamCard = styled.div`
   animation: ${fadeInUp} 1s ease-out ${(props) => props.delay}s both;
 
   &:hover {
-    transform: translateY(-8px);
+    transform: translateY(-10px);
     border-color: #00f5ff;
     background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 25px 50px rgba(0, 245, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   }
 
   &::before {
@@ -605,7 +636,7 @@ const TeamLogo = styled.div`
   width: 70px;
   height: 70px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(225, 225, 225, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -730,5 +761,3 @@ const StatCard = styled.div`
     margin-top: 0.5rem;
   }
 `;
-
-export default EplWrapper;
