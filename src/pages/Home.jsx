@@ -83,14 +83,15 @@ const useIntersectionObserver = (options = {}) => {
         ...options,
       }
     );
-
+    let observerRefValue = null;
     if (elementRef.current) {
-      observer.observe(elementRef.current);
+      observerRefValue = elementRef.current;
+      observer.observe(observerRefValue);
     }
 
     return () => {
-      if (elementRef.current) {
-        observer.unobserve(elementRef.current);
+      if (observerRefValue) {
+        observer.unobserve(observerRefValue);
       }
     };
   }, [hasAnimated, options]);
@@ -168,10 +169,10 @@ export function Home() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const statsData = [
-    { number: "10+", label: "Football Leagues", duration: 2500 },
-    { number: "185+", label: "Teams Covered", duration: 3000 },
-    { number: "2000+", label: "Player Profiles", duration: 3200 },
-    { number: "10+", label: "Countries", duration: 2500 },
+    { number: "10+", label: "Football Leagues", duration: 2000 },
+    { number: "185+", label: "Teams Covered", duration: 2000 },
+    { number: "2000+", label: "Player Profiles", duration: 2000 },
+    { number: "10+", label: "Countries", duration: 2000 },
   ];
 
   const features = [

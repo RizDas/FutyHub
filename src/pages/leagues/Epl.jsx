@@ -94,7 +94,17 @@ function EplInner() {
 
   if (loading) {
     return (
-      <div style={{ textAlign: "center", padding: "20px" }}>
+      <div
+        style={{
+          textAlign: "center",
+          padding: "20px",
+          backgroundColor: "#11192e",
+          height: "57vh",
+          color: "#ffffff",
+          fontSize: "50px",
+          paddingTop: "30vh",
+        }}
+      >
         <span>Loading...</span>
       </div>
     );

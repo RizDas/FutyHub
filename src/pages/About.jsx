@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import styled, { keyframes, createGlobalStyle } from "styled-components";
 import {
   Trophy,
@@ -13,7 +13,53 @@ import {
   Star,
   Award,
   Compass,
+  BrainCog,
 } from "lucide-react";
+
+// Tilt Component
+const TiltCard = ({ children, gradient, iconColor, className }) => {
+  const cardRef = useRef(null);
+  const [transform, setTransform] = useState("");
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+
+    const card = cardRef.current;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = (y - centerY) / 10;
+    const rotateY = (centerX - x) / 10;
+
+    setTransform(
+      `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`
+    );
+  };
+
+  const handleMouseLeave = () => {
+    setTransform(
+      "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)"
+    );
+  };
+
+  return (
+    <ValueCard
+      ref={cardRef}
+      gradient={gradient}
+      iconColor={iconColor}
+      className={className}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ transform }}
+    >
+      {children}
+    </ValueCard>
+  );
+};
 
 export default function About() {
   const values = [
@@ -49,32 +95,40 @@ export default function About() {
 
   const team = [
     {
-      name: "Alex Chen",
+      name: "Rishabh Das",
       role: "Founder & CEO",
       icon: Trophy,
       gradient: "#00f5ff, #0084ff",
       description: "Former sports analyst with 10+ years in football data",
     },
     {
-      name: "Maria Rodriguez",
+      name: "Rishabh Das",
       role: "Head of Data",
       icon: Database,
       gradient: "#ff6b35, #f7931e",
       description: "Expert in sports analytics and database architecture",
     },
     {
-      name: "James Wilson",
-      role: "Lead Developer",
+      name: "Rishabh Das",
+      role: "Lead Developer ",
       icon: Zap,
       gradient: "#ffd700, #ffb347",
       description: "Full-stack developer specializing in real-time systems",
     },
     {
-      name: "Sophie Laurent",
-      role: "UX Designer",
+      name: "Rishabh Das",
+      role: "UI/UX Designer",
       icon: Compass,
       gradient: "#c77dff, #9d4edd",
-      description: "Passionate about creating intuitive sports experiences",
+      description: "Passionate about creating intuitive user experiences",
+    },
+    {
+      name: "Claude AI",
+      role: "Scaffolding AI",
+      icon: BrainCog,
+      gradient: "#43e674, #07a72a",
+      description:
+        "AI-powered assistant for writing basic struture and framework",
     },
   ];
 
@@ -191,11 +245,11 @@ export default function About() {
             </SectionTitle>
             <ValuesGrid>
               {values.map((value, index) => (
-                <ValueCard key={index} iconColor={value.iconColor}>
+                <TiltCard key={index} iconColor={value.iconColor}>
                   <value.icon className="icon" />
                   <h3>{value.title}</h3>
                   <p>{value.description}</p>
-                </ValueCard>
+                </TiltCard>
               ))}
             </ValuesGrid>
           </ValuesSection>
@@ -240,7 +294,7 @@ export default function About() {
                 Join thousands of football fans who trust FutyHub for their
                 daily dose of football knowledge and discovery.
               </p>
-              <CTAButton>
+              <CTAButton onClick={() => (location.href = "/leagues")}>
                 Start Your Journey <ArrowRight size={20} />
               </CTAButton>
             </CTACard>
@@ -518,7 +572,7 @@ const SectionTitle = styled.h2`
 
 const ValuesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: 2rem;
 `;
 
@@ -608,7 +662,7 @@ const TeamSection = styled.section`
 
 const TeamGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   margin-top: 3rem;
 `;
