@@ -48,7 +48,7 @@ const Footer = () => {
 };
 
 const Foot = styled.footer`
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(15, 15, 15, 0.95);
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(0, 245, 255, 0.1);
   padding: 1.5rem 0;

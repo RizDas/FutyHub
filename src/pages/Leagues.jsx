@@ -24,7 +24,7 @@ export default function Leagues() {
       season: "2024-25",
       teams: 20,
       founded: 1992,
-      icon: Crown,
+      icon: "/images/epl_white.svg",
       gradient: "linear-gradient(135deg, #00f5ff, #0084ff)",
       bgColor: "rgba(0, 245, 255, 0.1)",
       borderColor: "#00f5ff",
@@ -32,12 +32,12 @@ export default function Leagues() {
     },
     {
       id: 2,
-      name: "La Liga #Under_Construction",
+      name: "La Liga",
       country: "Spain",
       season: "2024-25",
       teams: 20,
       founded: 1929,
-      icon: Star,
+      icon: "/images/laliga_white.svg",
       gradient: "linear-gradient(135deg, #ff6b35, #f7931e)",
       bgColor: "rgba(255, 107, 53, 0.1)",
       borderColor: "#ff6b35",
@@ -181,7 +181,7 @@ export default function Leagues() {
               >
                 <LeagueHeader>
                   <LeagueIcon>
-                    <league.icon size={40} />
+                    <LeagueImg src={league.icon} alt={league.name} />
                   </LeagueIcon>
                   <LeagueInfo>
                     <h3>{league.name}</h3>
@@ -462,6 +462,11 @@ const LeagueIcon = styled.div`
   align-items: center;
   justify-content: center;
   color: ${(props) => props.borderColor || "#00f5ff"};
+`;
+
+const LeagueImg = styled.img`
+  width: 40px;
+  height: 40px;
 `;
 
 const LeagueInfo = styled.div`

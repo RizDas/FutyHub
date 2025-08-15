@@ -24,13 +24,13 @@ const store = configureStore({
   },
 });
 
-function LaligaInner() {
+function SerieaInner() {
   const dispatch = useDispatch();
-  const [laligaFromDb, setLaligaFromDb] = useState([]);
+  const [serieaFromDb, setSerieaFromDb] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const effectiveTeams = laligaFromDb;
+  const effectiveTeams = serieaFromDb;
 
   useEffect(() => {
     if (!db || typeof db.collection !== "function") {
@@ -46,8 +46,8 @@ function LaligaInner() {
             .map((doc) => ({ id: doc.id, ...doc.data() }))
             .filter(
               (t) =>
-                t.league === "laliga" ||
-                (t.league && t.league.toLowerCase() === "laliga")
+                t.league === "seriea" ||
+                (t.league && t.league.toLowerCase() === "seriea")
             );
 
           if (fetchedTeams.length > 0) {
@@ -58,14 +58,14 @@ function LaligaInner() {
               founded: team.founded ?? "—",
               stadium: team.stadium ?? "—",
               players: team.players ?? Math.floor(Math.random() * 10) + 20,
-              logo: team.logo ?? "/images/laliga.svg",
-              colors: team.colors ?? "#ff6b35",
+              logo: team.logo ?? "/images/seriea.svg",
+              colors: team.colors ?? "#22c55e",
             }));
 
-            setLaligaFromDb(normalized);
-            dispatch(setTeams({ laliga: normalized }));
+            setSerieaFromDb(normalized);
+            dispatch(setTeams({ seriea: normalized }));
           } else {
-            setLaligaFromDb([]);
+            setSerieaFromDb([]);
           }
         } catch (err) {
           console.error("Error parsing teams snapshot:", err);
@@ -98,7 +98,7 @@ function LaligaInner() {
         style={{
           textAlign: "center",
           padding: "20px",
-          backgroundColor: "#2e1a0a",
+          backgroundColor: "#203a43",
           height: "57vh",
           color: "#ffffff",
           fontSize: "50px",
@@ -116,13 +116,13 @@ function LaligaInner() {
       <Container>
         <BackgroundOrbs>
           <Orb
-            color="radial-gradient(circle, #ff6b35, transparent)"
+            color="radial-gradient(circle, #22c55e, transparent)"
             duration="20"
             delay="0"
             style={{ top: "10%", left: "10%", width: "300px", height: "300px" }}
           />
           <Orb
-            color="radial-gradient(circle, #f7931e, transparent)"
+            color="radial-gradient(circle, #16a34a, transparent)"
             duration="25"
             delay="5"
             style={{
@@ -133,7 +133,7 @@ function LaligaInner() {
             }}
           />
           <Orb
-            color="radial-gradient(circle, #fbbf24, transparent)"
+            color="radial-gradient(circle, #15803d, transparent)"
             duration="30"
             delay="10"
             style={{
@@ -148,7 +148,7 @@ function LaligaInner() {
         <Header>
           <Logo>
             <Trophy
-              style={{ color: "#ff6b35", width: "2rem", height: "2rem" }}
+              style={{ color: "#22c55e", width: "2rem", height: "2rem" }}
             />
             <h1>FutyHub</h1>
           </Logo>
@@ -171,19 +171,19 @@ function LaligaInner() {
 
           <HeroSection>
             <LeagueIconLarge>
-              <EPLLogo src="/images/laliga_white.svg" alt="LALIGA" />
+              <SERIEALogo src="/images/seriea_white.svg" alt="SERIEA" />
             </LeagueIconLarge>
             <Title>
-              <EPLText src="/images/laliga_text_white.svg" alt="La Liga" />
+              <SERIEAText src="/images/seriea_text_white.svg" alt="Serie A" />
             </Title>
             <LeagueInfo>
               <InfoItem>
                 <MapPin size={20} />
-                <span>Spain</span>
+                <span>Italy</span>
               </InfoItem>
               <InfoItem>
                 <Calendar size={20} />
-                <span>Founded 1929</span>
+                <span>Founded 1898</span>
               </InfoItem>
               <InfoItem>
                 <Users size={20} />
@@ -195,8 +195,9 @@ function LaligaInner() {
               </InfoItem>
             </LeagueInfo>
             <Subtitle>
-              The heart of Spanish football. Home to legendary clubs, passionate
-              fans, and some of the world's greatest players and rivalries.
+              Italy's premier football league. Where tactical brilliance meets
+              passionate football culture in the birthplace of defensive
+              artistry.
             </Subtitle>
           </HeroSection>
 
@@ -220,7 +221,7 @@ function LaligaInner() {
                   <TeamLogo>
                     {typeof team.logo === "string" ? (
                       <TeamLogoImage
-                        src={team.logo || "/images/laliga.svg"}
+                        src={team.logo || "/images/seriea.svg"}
                         alt={team.name}
                       />
                     ) : React.isValidElement(team.logo) ? (
@@ -228,7 +229,7 @@ function LaligaInner() {
                     ) : typeof team.logo === "function" ? (
                       React.createElement(team.logo, { size: 40 })
                     ) : (
-                      <TeamLogoImage src="/images/laliga.jpg" alt={team.name} />
+                      <TeamLogoImage src="/images/seriea.jpg" alt={team.name} />
                     )}
                   </TeamLogo>
                   <TeamInfo>
@@ -294,15 +295,15 @@ function LaligaInner() {
   );
 }
 
-export function Laliga() {
+export function Serieadum() {
   return (
     <Provider store={store}>
-      <LaligaInner />
+      <SerieaInner />
     </Provider>
   );
 }
 
-export default Laliga;
+export default Serieadum;
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -341,7 +342,7 @@ const gradientShift = keyframes`
 
 const Container = styled.div`
   min-height: 100vh;
-  background: linear-gradient(-45deg, #2d1b0e, #3d2317, #1a0d00, #2e1a0a);
+  background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1a4a3a);
   background-size: 400% 400%;
   animation: ${gradientShift} 15s ease infinite;
   position: relative;
@@ -385,7 +386,7 @@ const Logo = styled.div`
   h1 {
     font-size: 2rem;
     font-weight: 800;
-    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    background: linear-gradient(135deg, #22c55e, #16a34a);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -405,7 +406,7 @@ const Nav = styled.nav`
     position: relative;
 
     &:hover {
-      color: #ff6b35;
+      color: #22c55e;
       transform: translateY(-2px);
     }
 
@@ -416,7 +417,7 @@ const Nav = styled.nav`
       left: 0;
       width: 0;
       height: 2px;
-      background: linear-gradient(90deg, #ff6b35, #f7931e);
+      background: linear-gradient(90deg, #22c55e, #16a34a);
       transition: width 0.3s ease;
     }
 
@@ -426,7 +427,7 @@ const Nav = styled.nav`
     }
 
     &.active {
-      color: #ff6b35;
+      color: #22c55e;
     }
   }
 `;
@@ -460,7 +461,7 @@ const BackButton = styled.button`
 
   &:hover {
     background: rgba(255, 255, 255, 0.15);
-    color: #ff6b35;
+    color: #22c55e;
     transform: translateX(-3px);
   }
 `;
@@ -483,23 +484,24 @@ const LeagueIconLarge = styled.div`
   margin-bottom: 40px;
 `;
 
-const EPLLogo = styled.img`
-  width: 240px;
-  height: 240px;
+const SERIEALogo = styled.img`
+  width: 360px;
+  height: 360px;
   object-fit: contain;
   filter: brightness(1.2) contrast(1.1);
 `;
 
 const Title = styled.div`
-  height: 150px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  margin-bottom: 85px;
 `;
 
-const EPLText = styled.img`
-  height: 750px;
+const SERIEAText = styled.img`
+  height: 460px;
   object-fit: contain;
   filter: brightness(1.2) contrast(1.1);
   color: white;
@@ -522,7 +524,7 @@ const InfoItem = styled.div`
   font-weight: 500;
 
   svg {
-    color: #ff6b35;
+    color: #22c55e;
   }
 `;
 
@@ -559,10 +561,10 @@ const SearchInput = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #ff6b35;
+    border-color: #22c55e;
     background: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+    box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
   }
 `;
 
@@ -578,7 +580,7 @@ const SectionTitle = styled.h2`
   margin-bottom: 3rem;
 
   .accent {
-    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    background: linear-gradient(135deg, #22c55e, #16a34a);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -605,9 +607,9 @@ const TeamCard = styled.div`
 
   &:hover {
     transform: translateY(-10px);
-    border-color: #ff6b35;
+    border-color: #22c55e;
     background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 40px rgba(34, 197, 94, 0.2);
   }
 
   &::before {
@@ -617,7 +619,7 @@ const TeamCard = styled.div`
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #ff6b35, #f7931e);
+    background: linear-gradient(90deg, #22c55e, #16a34a);
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -638,7 +640,7 @@ const TeamRank = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ff6b35;
+  color: #22c55e;
   font-weight: 700;
   font-size: 0.9rem;
 `;
@@ -651,7 +653,7 @@ const TeamLogo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ff6b35;
+  color: #22c55e;
   margin-bottom: 1.5rem;
   padding: 0.8rem;
 `;
@@ -727,7 +729,7 @@ const StatItem = styled.div`
   .value {
     font-size: 1.2rem;
     font-weight: 700;
-    color: #ff6b35;
+    color: #22c55e;
   }
 `;
 
@@ -759,7 +761,7 @@ const StatCard = styled.div`
   .number {
     font-size: 2.5rem;
     font-weight: 900;
-    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    background: linear-gradient(135deg, #22c55e, #16a34a);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

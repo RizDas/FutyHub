@@ -14,6 +14,8 @@ import {
   Award,
   Compass,
   BrainCog,
+  BookUp2,
+  NotepadTextDashed,
 } from "lucide-react";
 
 // Tilt Component
@@ -129,6 +131,14 @@ export default function About() {
       gradient: "#43e674, #07a72a",
       description:
         "AI-powered assistant for writing basic struture and framework",
+    },
+    {
+      name: "Bighnesh Mukherjee",
+      role: "Game Expert",
+      icon: NotepadTextDashed,
+      gradient: "#ec401e, #9f1902",
+      description:
+        "Specilist in football knowledge,game strategies and analysis, ensuring accurate data",
     },
   ];
 

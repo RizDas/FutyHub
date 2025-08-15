@@ -502,6 +502,7 @@ const EPLText = styled.img`
   height: 800px;
   object-fit: contain;
   filter: brightness(1.2) contrast(1.1);
+  color: white;
 `;
 
 const LeagueInfo = styled.div`
