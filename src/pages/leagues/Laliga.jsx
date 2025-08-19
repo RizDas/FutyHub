@@ -171,10 +171,10 @@ function LaligaInner() {
 
           <HeroSection>
             <LeagueIconLarge>
-              <EPLLogo src="/images/laliga_white.svg" alt="LALIGA" />
+              <LALIGALogo src="/images/laliga_white.svg" alt="LALIGA" />
             </LeagueIconLarge>
             <Title>
-              <EPLText src="/images/laliga_text_white.svg" alt="La Liga" />
+              <LALIGAText src="/images/laliga_text_white.svg" alt="La Liga" />
             </Title>
             <LeagueInfo>
               <InfoItem>
@@ -483,7 +483,7 @@ const LeagueIconLarge = styled.div`
   margin-bottom: 40px;
 `;
 
-const EPLLogo = styled.img`
+const LALIGALogo = styled.img`
   width: 240px;
   height: 240px;
   object-fit: contain;
@@ -498,7 +498,7 @@ const Title = styled.div`
   padding: 1rem;
 `;
 
-const EPLText = styled.img`
+const LALIGAText = styled.img`
   height: 750px;
   object-fit: contain;
   filter: brightness(1.2) contrast(1.1);

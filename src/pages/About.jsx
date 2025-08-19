@@ -98,10 +98,10 @@ export default function About() {
   const team = [
     {
       name: "Rishabh Das",
-      role: "Founder & CEO",
+      role: "Founder & MD",
       icon: Trophy,
       gradient: "#00f5ff, #0084ff",
-      description: "Former sports analyst with 10+ years in football data",
+      description: "Football patron with 10+ years in football data",
     },
     {
       name: "Rishabh Das",
@@ -125,12 +125,12 @@ export default function About() {
       description: "Passionate about creating intuitive user experiences",
     },
     {
-      name: "Claude AI",
-      role: "Scaffolding AI",
+      name: "Soumili Dey",
+      role: "Backend Developer",
       icon: BrainCog,
       gradient: "#43e674, #07a72a",
       description:
-        "AI-powered assistant for writing basic struture and framework",
+        "Full-stack developer specializing in backend logic and framework",
     },
     {
       name: "Bighnesh Mukherjee",
@@ -138,7 +138,7 @@ export default function About() {
       icon: NotepadTextDashed,
       gradient: "#ec401e, #9f1902",
       description:
-        "Specilist in football knowledge,game strategies and analysis, ensuring accurate data",
+        "Specialist in football knowledge, game strategies and analysis",
     },
   ];
 
