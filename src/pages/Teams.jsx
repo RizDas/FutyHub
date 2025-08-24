@@ -15,8 +15,8 @@ import {
   Flame,
 } from "lucide-react";
 
-export default function Leagues() {
-  const leagues = [
+export default function Teams() {
+  const teams = [
     {
       id: 1,
       name: "Premier League",
@@ -63,7 +63,7 @@ export default function Leagues() {
       season: "2024-25",
       teams: 18,
       founded: 1963,
-      icon: "/images/bundesliga_white.svg",
+      icon: Mountain,
       gradient: "linear-gradient(135deg, #dc2626, #991b1b)",
       bgColor: "rgba(220, 38, 38, 0.1)",
       borderColor: "#dc2626",
@@ -161,16 +161,16 @@ export default function Leagues() {
 
         <MainContent>
           <HeroSection>
-            <Title>Football Leagues</Title>
+            <Title>Football Teams</Title>
             <Subtitle>
-              Explore the top leagues from around the world. Discover teams,
+              Explore the top teams from around the world. Discover teams,
               standings, and dive deep into the competitions that define
               football.
             </Subtitle>
           </HeroSection>
 
-          <LeaguesGrid>
-            {leagues.map((league, index) => (
+          <TeamsGrid>
+            {teams.map((league, index) => (
               <LeagueCard
                 key={league.id}
                 gradient={league.gradient}
@@ -203,18 +203,18 @@ export default function Leagues() {
                 </LeagueHeader>
               </LeagueCard>
             ))}
-          </LeaguesGrid>
+          </TeamsGrid>
 
           <StatsSection>
-            <SectionTitle>League Statistics</SectionTitle>
+            <SectionTitle>Statistics</SectionTitle>
             <StatsGrid>
               <StatCard>
-                <span className="number">{leagues.length}</span>
+                <span className="number">{teams.length}</span>
                 <div className="label">Active Leagues</div>
               </StatCard>
               <StatCard>
                 <span className="number">
-                  {leagues.reduce((total, league) => total + league.teams, 0)}
+                  {teams.reduce((total, league) => total + league.teams, 0)}
                 </span>
                 <div className="label">Total Teams</div>
               </StatCard>
@@ -414,7 +414,7 @@ const Subtitle = styled.p`
   line-height: 1.6;
 `;
 
-const LeaguesGrid = styled.div`
+const TeamsGrid = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;

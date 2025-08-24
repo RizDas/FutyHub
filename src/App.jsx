@@ -9,7 +9,8 @@ import Bundesliga from "./pages/leagues/Bundesliga";
 import Ligue1 from "./pages/leagues/Ligue1";
 import HomeWrapper from "./pages/Home";
 import EplWrapper from "./pages/leagues/Epl";
-import Serieadum from "./pages/leagues/serieadummy";
+import Teams from "./pages/Teams";
+import International from "./pages/leagues/International";
 
 const App = () => {
   return (
@@ -20,10 +21,11 @@ const App = () => {
           <Route path="/home" element={<HomeWrapper />} />
           <Route path="/about" element={<About />} />
           <Route path="/leagues" element={<Leagues />} />
+          <Route path="/teams" element={<Teams />} />
+          <Route path="/international" element={<International />} />
           <Route path="/epl" element={<EplWrapper />} />
           <Route path="/laliga" element={<Laliga />} />
           <Route path="/seriea" element={<Seriea />} />
-          <Route path="/serieadummy" element={<Serieadum />} />
           <Route path="/bundesliga" element={<Bundesliga />} />
           <Route path="/ligue1" element={<Ligue1 />} />
         </Routes>

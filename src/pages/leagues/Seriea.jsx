@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes, createGlobalStyle } from "styled-components";
 import {
   Trophy,
   Users,
   MapPin,
   Calendar,
-  Star,
   ChevronLeft,
   Shield,
   Globe,
@@ -13,36 +12,103 @@ import {
   Zap,
   ArrowLeft,
 } from "lucide-react";
+import { Provider, useDispatch } from "react-redux";
+import db from "../../firebase";
+import { setTeams } from "../../features/teams/teamslice";
+import { configureStore } from "@reduxjs/toolkit";
+import teamReducer from "../../features/teams/teamslice";
 
-// Import Serie A teams
-import * as SerieATeams from "../../../library/seriea/index.js";
+const store = configureStore({
+  reducer: {
+    teams: teamReducer,
+  },
+});
 
-export default function Seriea() {
+function SerieaInner() {
+  const dispatch = useDispatch();
+  const [serieaFromDb, setSerieaFromDb] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Convert imported team objects to the format needed for the component
-  const formatTeamsData = (teamsObject) => {
-    return Object.entries(teamsObject).map(([key, team], index) => ({
-      id: index + 1,
-      name: key.replace(/([A-Z])/g, " $1").trim(),
-      city: team.city,
-      founded: team.founded,
-      stadium: team.stadium,
-      players: Math.floor(Math.random() * 10) + 20,
-      logo: Shield,
-      colors: "#22c55e",
-      position: index + 1, // League position
-      points: Math.floor(Math.random() * 30) + 50, // Random points
-      played: Math.floor(Math.random() * 5) + 25, // Games played
-    }));
-  };
+  const effectiveTeams = serieaFromDb;
 
-  const teams = formatTeamsData(SerieATeams);
-  const filteredTeams = teams.filter(
-    (team) =>
-      team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      team.city.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    if (!db || typeof db.collection !== "function") {
+      console.warn(" 'db.collection' not available!");
+      setLoading(false);
+      return;
+    }
+
+    const unsubscribe = db.collection("teams").onSnapshot(
+      (snapshot) => {
+        try {
+          const fetchedTeams = snapshot.docs
+            .map((doc) => ({ id: doc.id, ...doc.data() }))
+            .filter(
+              (t) =>
+                t.league === "seriea" ||
+                (t.league && t.league.toLowerCase() === "seriea")
+            );
+
+          if (fetchedTeams.length > 0) {
+            const normalized = fetchedTeams.map((team, index) => ({
+              id: team.id ?? index + 1,
+              name: team.name ?? team.clubName ?? `Team ${index + 1}`,
+              city: team.city ?? team.town ?? "Unknown",
+              founded: team.founded ?? "—",
+              stadium: team.stadium ?? "—",
+              players: team.players ?? Math.floor(Math.random() * 10) + 20,
+              logo: team.logo ?? "/images/seriea.svg",
+              colors: team.colors ?? "#22c55e",
+            }));
+
+            setSerieaFromDb(normalized);
+            dispatch(setTeams({ seriea: normalized }));
+          } else {
+            setSerieaFromDb([]);
+          }
+        } catch (err) {
+          console.error("Error parsing teams snapshot:", err);
+        } finally {
+          setLoading(false);
+        }
+      },
+      (error) => {
+        console.error("Firestore onSnapshot error:", error);
+        setLoading(false);
+      }
+    );
+
+    return () => {
+      if (typeof unsubscribe === "function") unsubscribe();
+    };
+  }, [dispatch]);
+
+  const filteredTeams = effectiveTeams.filter((team) => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return true;
+    const name = (team.name || "").toString().toLowerCase();
+    const city = (team.city || "").toString().toLowerCase();
+    return name.includes(term) || city.includes(term);
+  });
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          textAlign: "center",
+          padding: "20px",
+          backgroundColor: "#203a43",
+          height: "57vh",
+          color: "#ffffff",
+          fontSize: "50px",
+          paddingTop: "30vh",
+        }}
+      >
+        <span>Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -105,9 +171,11 @@ export default function Seriea() {
 
           <HeroSection>
             <LeagueIconLarge>
-              <Shield size={80} />
+              <SERIEALogo src="/images/seriea_white.svg" alt="SERIEA" />
             </LeagueIconLarge>
-            <Title>Serie A</Title>
+            <Title>
+              <SERIEAText src="/images/seriea_text_white.svg" alt="Serie A" />
+            </Title>
             <LeagueInfo>
               <InfoItem>
                 <MapPin size={20} />
@@ -119,7 +187,7 @@ export default function Seriea() {
               </InfoItem>
               <InfoItem>
                 <Users size={20} />
-                <span>{teams.length} Teams</span>
+                <span>{effectiveTeams.length} Teams</span>
               </InfoItem>
               <InfoItem>
                 <Trophy size={20} />
@@ -146,10 +214,23 @@ export default function Seriea() {
             <SectionTitle>All Teams</SectionTitle>
             <TeamsGrid>
               {filteredTeams.map((team, index) => (
-                <TeamCard key={team.id} delay={index * 0.1}>
-                  <TeamRank>#{team.position}</TeamRank>
+                <TeamCard
+                  key={team.id ?? `${team.name}-${index}`}
+                  delay={index * 0.1}
+                >
                   <TeamLogo>
-                    <team.logo size={40} />
+                    {typeof team.logo === "string" ? (
+                      <TeamLogoImage
+                        src={team.logo || "/images/seriea.svg"}
+                        alt={team.name}
+                      />
+                    ) : React.isValidElement(team.logo) ? (
+                      team.logo
+                    ) : typeof team.logo === "function" ? (
+                      React.createElement(team.logo, { size: 40 })
+                    ) : (
+                      <TeamLogoImage src="/images/seriea.jpg" alt={team.name} />
+                    )}
                   </TeamLogo>
                   <TeamInfo>
                     <TeamName>{team.name}</TeamName>
@@ -168,16 +249,6 @@ export default function Seriea() {
                       </MetaItem>
                     </TeamMeta>
                     <Stadium>{team.stadium}</Stadium>
-                    <TeamStats>
-                      <StatItem>
-                        <span className="label">Points</span>
-                        <span className="value">{team.points}</span>
-                      </StatItem>
-                      <StatItem>
-                        <span className="label">Played</span>
-                        <span className="value">{team.played}</span>
-                      </StatItem>
-                    </TeamStats>
                   </TeamInfo>
                 </TeamCard>
               ))}
@@ -188,23 +259,32 @@ export default function Seriea() {
             <SectionTitle>League Overview</SectionTitle>
             <StatsGrid>
               <StatCard>
-                <span className="number">{teams.length}</span>
+                <span className="number">{effectiveTeams.length}</span>
                 <div className="label">Total Teams</div>
               </StatCard>
               <StatCard>
                 <span className="number">
-                  {teams.reduce((sum, team) => sum + team.players, 0)}
+                  {effectiveTeams.reduce(
+                    (sum, team) => sum + (team.players || 0),
+                    0
+                  )}
                 </span>
                 <div className="label">Total Players</div>
               </StatCard>
               <StatCard>
                 <span className="number">
-                  {new Set(teams.map((team) => team.city)).size}
+                  {
+                    new Set(
+                      effectiveTeams.map((team) =>
+                        (team.city || "").toLowerCase()
+                      )
+                    ).size
+                  }
                 </span>
                 <div className="label">Cities</div>
               </StatCard>
               <StatCard>
-                <span className="number">1898</span>
+                <span className="number">1992</span>
                 <div className="label">Founded</div>
               </StatCard>
             </StatsGrid>
@@ -214,6 +294,16 @@ export default function Seriea() {
     </>
   );
 }
+
+export function Seriea() {
+  return (
+    <Provider store={store}>
+      <SerieaInner />
+    </Provider>
+  );
+}
+
+export default Seriea;
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -383,27 +473,38 @@ const HeroSection = styled.section`
 `;
 
 const LeagueIconLarge = styled.div`
-  width: 120px;
-  height: 120px;
+  width: 220px;
+  height: 220px;
   border-radius: 30px;
-  background: rgba(34, 197, 94, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #22c55e;
   margin: 0 auto 2rem;
-  animation: ${float} 6s ease-in-out infinite;
+  padding: 1rem;
+  margin-bottom: 40px;
 `;
 
-const Title = styled.h1`
-  font-size: clamp(3rem, 6vw, 5rem);
-  font-weight: 900;
-  background: linear-gradient(135deg, #22c55e, #16a34a, #15803d);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
+const SERIEALogo = styled.img`
+  width: 360px;
+  height: 360px;
+  object-fit: contain;
+  filter: brightness(1.2) contrast(1.1);
+`;
+
+const Title = styled.div`
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  margin-bottom: 85px;
+`;
+
+const SERIEAText = styled.img`
+  height: 460px;
+  object-fit: contain;
+  filter: brightness(1.2) contrast(1.1);
+  color: white;
 `;
 
 const LeagueInfo = styled.div`
@@ -505,10 +606,10 @@ const TeamCard = styled.div`
   animation: ${fadeInUp} 1s ease-out ${(props) => props.delay}s both;
 
   &:hover {
-    transform: translateY(-8px);
+    transform: translateY(-10px);
     border-color: #22c55e;
     background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 25px 50px rgba(34, 197, 94, 0.2);
+    box-shadow: 0 20px 40px rgba(34, 197, 94, 0.2);
   }
 
   &::before {
@@ -535,7 +636,7 @@ const TeamRank = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(34, 197, 94, 0.2);
+  background: rgba(0, 245, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -548,12 +649,20 @@ const TeamLogo = styled.div`
   width: 70px;
   height: 70px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(225, 225, 225, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #22c55e;
   margin-bottom: 1.5rem;
+  padding: 0.8rem;
+`;
+
+const TeamLogoImage = styled.img`
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: brightness(1.1) contrast(1.05);
 `;
 
 const TeamInfo = styled.div`

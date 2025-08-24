@@ -272,10 +272,10 @@ export default function About() {
               <p>
                 FutyHub was born from a simple frustration: scattered football
                 information across countless websites, outdated player lists,
-                and incomplete league coverage. As passionate football fans
-                ourselves, we knew there had to be a better way.
+                and incomplete league coverage. As a passionate football fan, I
+                knew there had to be a better way.
               </p>
-              <div className="author">— The FutyHub Team</div>
+              <div className="author">— The Founder</div>
             </StoryCard>
           </StorySection>
 

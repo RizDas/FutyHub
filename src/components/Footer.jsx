@@ -22,13 +22,13 @@ const Footer = () => {
         </LeftSection>
 
         <SocialLinks>
-          <a href="#" aria-label="Twitter">
+          <a href="https://www.x.com/" aria-label="Twitter">
             <Twitter size={16} />
           </a>
-          <a href="#" aria-label="Instagram">
+          <a href="https://www.instagram.com/" aria-label="Instagram">
             <Instagram size={16} />
           </a>
-          <a href="#" aria-label="Facebook">
+          <a href="https://www.facebook.com/" aria-label="Facebook">
             <Facebook size={16} />
           </a>
           <a href="#" aria-label="GitHub">
@@ -53,6 +53,7 @@ const Foot = styled.footer`
   border-top: 1px solid rgba(0, 245, 255, 0.1);
   padding: 1.5rem 0;
   font-family: monospace, sans-serif;
+  height: 80px;
 `;
 
 const FooterContent = styled.div`
@@ -103,6 +104,10 @@ const Description = styled.p`
   max-width: 300px;
   line-height: 2;
   margin-top: 4px;
+
+  &:hover {
+    color: #bec8d8;
+  }
 `;
 
 const Copyright = styled.div`
@@ -112,6 +117,10 @@ const Copyright = styled.div`
 
   @media (max-width: 768px) {
     order: 1;
+  }
+
+  &:hover {
+    color: #738399;
   }
 `;
 
@@ -131,8 +140,8 @@ const SocialLinks = styled.div`
     transition: all 0.2s ease;
 
     &:hover {
-      background: rgba(0, 245, 255, 0.1);
-      color: #00f5ff;
+      background: rgba(245, 245, 245, 0.1);
+      color: #efefef;
       transform: translateY(-1px);
     }
   }

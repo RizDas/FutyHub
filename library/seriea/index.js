@@ -1,5 +1,11 @@
 // seriea
 
+export const ACMilan = {
+  city: "Milan",
+  founded: 1899,
+  stadium: "San Siro",
+};
+
 export const Atalanta = {
   city: "Bergamo",
   founded: 1907,
@@ -70,12 +76,6 @@ export const Lecce = {
   city: "Lecce",
   founded: 1908,
   stadium: "Stadio Via del Mare",
-};
-
-export const Milan = {
-  city: "Milan",
-  founded: 1899,
-  stadium: "San Siro",
 };
 
 export const Napoli = {
