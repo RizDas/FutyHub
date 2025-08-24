@@ -506,7 +506,7 @@ const Logo = styled.div`
 
   h1 {
     font-size: 2rem;
-    font-weight: 900;
+    font-weight: 600;
     color: #ffffff;
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
   }

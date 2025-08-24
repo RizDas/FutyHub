@@ -394,7 +394,7 @@ const Logo = styled.div`
 
   h1 {
     font-size: 2rem;
-    font-weight: 800;
+    font-weight: 600;
     background: linear-gradient(135deg, #dc2626, #991b1b);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

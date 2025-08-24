@@ -92,7 +92,7 @@ const Brand = styled.div`
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-size: 1.2rem;
-    font-weight: 700;
+    font-weight: 600;
     margin: 0;
   }
 `;
