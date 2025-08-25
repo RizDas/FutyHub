@@ -17,6 +17,7 @@ import db from "../../firebase";
 import { setTeams } from "../../features/teams/teamslice";
 import { configureStore } from "@reduxjs/toolkit";
 import teamReducer from "../../features/teams/teamslice";
+import Leaderboard from "../../components/Leaderboard";
 
 const store = configureStore({
   reducer: {
