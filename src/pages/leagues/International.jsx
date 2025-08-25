@@ -41,30 +41,31 @@ function InternationalInner() {
       return;
     }
 
-    const unsubscribe = db.collection("teams").onSnapshot(
+    const unsubscribe = db.collection("international").onSnapshot(
       (snapshot) => {
         try {
-          const fetchedTeams = snapshot.docs
-            .map((doc) => ({ id: doc.id, ...doc.data() }))
-            .filter(
-              (t) =>
-                t.league === "international" ||
-                (t.league && t.league.toLowerCase() === "international")
-            );
+          const fetchedTeams = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
 
           if (fetchedTeams.length > 0) {
             const normalized = fetchedTeams.map((team, index) => ({
               id: team.id ?? index + 1,
               name: team.name ?? team.clubName ?? `Team ${index + 1}`,
-              country: team.country ?? team.city ?? "Unknown",
-              founded: team.founded ?? "—",
-              stadium: team.stadium ?? "—",
-              players: team.players ?? Math.floor(Math.random() * 10) + 20,
+              description: team.description ?? "",
+              founded: team.founded ?? "---",
+              stadium: team.stadium ?? "---",
+              manager: team.manager ?? "---",
+              captain: team.captain ?? "---",
+              association: team.association ?? "---",
+              confederation: team.confederation ?? "---",
               logo: team.logo ?? "/images/international.svg",
               colors: team.colors ?? "#1a1a1a",
               worldRanking:
                 team.worldRanking ?? Math.floor(Math.random() * 50) + 1,
               continent: team.continent ?? "Unknown",
+              players: team.players ?? Math.floor(Math.random() * 10 + 20),
             }));
 
             setInternationalFromDb(normalized);
@@ -93,10 +94,20 @@ function InternationalInner() {
     const term = searchTerm.trim().toLowerCase();
     if (!term) return true;
     const name = (team.name || "").toString().toLowerCase();
-    const country = (team.country || "").toString().toLowerCase();
     const continent = (team.continent || "").toString().toLowerCase();
+    const association = (team.association || "").toString().toLowerCase();
+    const manager = (team.manager || "").toString().toLowerCase();
+    const confederation = (team.confederation || "").toString().toLowerCase();
+    const stadium = (team.stadium || "").toString().toLowerCase();
+    const captain = (team.captain || "").toString().toLowerCase();
     return (
-      name.includes(term) || country.includes(term) || continent.includes(term)
+      name.includes(term) ||
+      continent.includes(term) ||
+      association.includes(term) ||
+      manager.includes(term) ||
+      confederation.includes(term) ||
+      stadium.includes(term) ||
+      captain.includes(term)
     );
   });
 
@@ -107,10 +118,9 @@ function InternationalInner() {
           textAlign: "center",
           padding: "20px",
           backgroundColor: "#000000",
-          height: "100vh",
+          height: "82vh",
           color: "#ffffff",
           fontSize: "50px",
-          paddingTop: "45vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -135,7 +145,7 @@ function InternationalInner() {
         <PulsingGrid />
         <Header>
           <Logo>
-            <Globe
+            <Trophy
               style={{ color: "#ffffff", width: "2rem", height: "2rem" }}
             />
             <h1>FutyHub</h1>
@@ -207,7 +217,10 @@ function InternationalInner() {
                   key={team.id ?? `${team.name}-${index}`}
                   delay={index * 0.05}
                 >
-                  <TeamRank>#{team.worldRanking}</TeamRank>
+                  <TeamRank>
+                    <p>#</p>
+                    {team.worldRanking}
+                  </TeamRank>
                   <TeamLogo>
                     {typeof team.logo === "string" ? (
                       <TeamLogoImage
@@ -226,8 +239,8 @@ function InternationalInner() {
                     <TeamName>{team.name}</TeamName>
                     <TeamMeta>
                       <MetaItem>
-                        <MapPin size={14} />
-                        <span>{team.country}</span>
+                        <Calendar size={14} />
+                        <span>{team.founded}</span>
                       </MetaItem>
                       <MetaItem>
                         <Globe size={14} />
@@ -235,7 +248,7 @@ function InternationalInner() {
                       </MetaItem>
                       <MetaItem>
                         <Users size={14} />
-                        <span>{team.players} players</span>
+                        <span>{team.manager}</span>
                       </MetaItem>
                     </TeamMeta>
                     <Stadium>{team.stadium || "Various Stadiums"}</Stadium>
@@ -249,16 +262,10 @@ function InternationalInner() {
             <SectionTitle>Global Overview</SectionTitle>
             <StatsGrid>
               <StatCard>
-                <div className="stat-icon">
-                  <Flag size={30} />
-                </div>
                 <span className="number">{effectiveTeams.length}</span>
                 <div className="label">National Teams</div>
               </StatCard>
               <StatCard>
-                <div className="stat-icon">
-                  <Users size={30} />
-                </div>
                 <span className="number">
                   {effectiveTeams.reduce(
                     (sum, team) => sum + (team.players || 0),
@@ -268,16 +275,10 @@ function InternationalInner() {
                 <div className="label">Total Players</div>
               </StatCard>
               <StatCard>
-                <div className="stat-icon">
-                  <Globe size={30} />
-                </div>
                 <span className="number">6</span>
                 <div className="label">Continents</div>
               </StatCard>
               <StatCard>
-                <div className="stat-icon">
-                  <Trophy size={30} />
-                </div>
                 <span className="number">32</span>
                 <div className="label">World Cup Spots</div>
               </StatCard>
@@ -733,7 +734,10 @@ const TeamCard = styled.div`
   backdrop-filter: blur(20px);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 25px;
-  padding: 2.5rem;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  padding-top: 2rem;
+  padding-bottom: 1.5rem;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
   overflow: hidden;
@@ -783,9 +787,18 @@ const TeamRank = styled.div`
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  font-weight: 800;
-  font-size: 1rem;
+  font-weight: 500;
+  font-size: 1.35rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
+
+  p {
+    font-size: 1rem;
+    padding-right: 2px;
+    padding-top: 3px;
+    font-weight: 400;
+    color: #dddddd;
+    font-family: "Montserrat", sans-serif;
+  }
 `;
 
 const TeamLogo = styled.div`
@@ -820,6 +833,11 @@ const TeamName = styled.h3`
   color: #ffffff;
   margin-bottom: 1.5rem;
   line-height: 1.2;
+`;
+
+const TeamDescription = styled.p`
+  font-size: 1rem;
+  color: #cccccc;
 `;
 
 const TeamMeta = styled.div`

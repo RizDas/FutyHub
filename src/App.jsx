@@ -11,6 +11,8 @@ import HomeWrapper from "./pages/Home";
 import EplWrapper from "./pages/leagues/Epl";
 import Teams from "./pages/Teams";
 import International from "./pages/leagues/International";
+import Managers from "./pages/Managers";
+import EplLead from "./pages/leaderboards/EplLead";
 
 const App = () => {
   return (
@@ -22,12 +24,14 @@ const App = () => {
           <Route path="/about" element={<About />} />
           <Route path="/leagues" element={<Leagues />} />
           <Route path="/teams" element={<Teams />} />
+          <Route path="/managers" element={<Managers />} />
           <Route path="/international" element={<International />} />
           <Route path="/epl" element={<EplWrapper />} />
           <Route path="/laliga" element={<Laliga />} />
           <Route path="/seriea" element={<Seriea />} />
           <Route path="/bundesliga" element={<Bundesliga />} />
           <Route path="/ligue1" element={<Ligue1 />} />
+          <Route path="/epl/leaderboard" element={<EplLead />} />
         </Routes>
         <Footer />
       </Router>

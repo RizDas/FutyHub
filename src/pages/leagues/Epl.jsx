@@ -60,6 +60,7 @@ function EplInner() {
               players: team.players ?? Math.floor(Math.random() * 10) + 20,
               logo: team.logo ?? "/images/epl.svg",
               colors: team.colors ?? "#00f5ff",
+              points: team.points ?? Math.floor(Math.random() * 10) + 10,
             }));
 
             setEplFromDb(normalized);

@@ -60,6 +60,7 @@ function LaligaInner() {
               players: team.players ?? Math.floor(Math.random() * 10) + 20,
               logo: team.logo ?? "/images/laliga.svg",
               colors: team.colors ?? "#ff6b35",
+              points: team.points ?? Math.floor(Math.random() * 10) + 10,
             }));
 
             setLaligaFromDb(normalized);
