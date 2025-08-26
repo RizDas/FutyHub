@@ -13,6 +13,7 @@ import Teams from "./pages/Teams";
 import International from "./pages/leagues/International";
 import Managers from "./pages/Managers";
 import EplLead from "./pages/leaderboards/EplLead";
+import LaligaLead from "./pages/leaderboards/LaligaLead";
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
           <Route path="/bundesliga" element={<Bundesliga />} />
           <Route path="/ligue1" element={<Ligue1 />} />
           <Route path="/epl/leaderboard" element={<EplLead />} />
+          <Route path="/laliga/leaderboard" element={<LaligaLead />} />
         </Routes>
         <Footer />
       </Router>

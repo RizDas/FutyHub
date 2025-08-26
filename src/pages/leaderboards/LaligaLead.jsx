@@ -12,6 +12,7 @@ import {
   Target,
   Zap,
   Star,
+  Flame,
 } from "lucide-react";
 import { Provider, useDispatch } from "react-redux";
 import db from "../../firebase";
@@ -26,9 +27,9 @@ const store = configureStore({
   },
 });
 
-function EplLeadInner() {
+function LaligaLeadInner() {
   const dispatch = useDispatch();
-  const [eplFromDb, setEplFromDb] = useState([]);
+  const [laligaFromDb, setLaligaFromDb] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,31 +46,31 @@ function EplLeadInner() {
             .map((doc) => ({ id: doc.id, ...doc.data() }))
             .filter(
               (t) =>
-                t.league === "epl" ||
-                (t.league && t.league.toLowerCase() === "epl")
+                t.league === "laliga" ||
+                (t.league && t.league.toLowerCase() === "laliga")
             );
 
           if (fetchedTeams.length > 0) {
             const normalized = fetchedTeams.map((team, index) => ({
               id: team.id ?? index + 1,
               name: team.name ?? team.clubName ?? `Team ${index + 1}`,
-              logo: team.logo ?? "/images/epl.svg",
-              points: team.points ?? Math.floor(Math.random() * 30) + 20,
+              logo: team.logo ?? "/images/laliga.svg",
+              points: team.points ?? Math.floor(Math.random() * 35) + 25,
               played: team.played ?? Math.floor(Math.random() * 10) + 15,
-              wins: team.wins ?? Math.floor(Math.random() * 8) + 5,
-              draws: team.draws ?? Math.floor(Math.random() * 5) + 2,
-              losses: team.losses ?? Math.floor(Math.random() * 5) + 1,
-              gf: team.gf ?? Math.floor(Math.random() * 30) + 20,
-              ga: team.ga ?? Math.floor(Math.random() * 20) + 10,
+              wins: team.wins ?? Math.floor(Math.random() * 10) + 6,
+              draws: team.draws ?? Math.floor(Math.random() * 6) + 3,
+              losses: team.losses ?? Math.floor(Math.random() * 6) + 2,
+              gf: team.gf ?? Math.floor(Math.random() * 35) + 25,
+              ga: team.ga ?? Math.floor(Math.random() * 25) + 12,
               form: team.form ?? generateRandomForm(),
             }));
 
             // Sort teams using the Leaderboard component
             const sortedTeams = Leaderboard(normalized);
-            setEplFromDb(sortedTeams);
-            dispatch(setTeams({ epl: sortedTeams }));
+            setLaligaFromDb(sortedTeams);
+            dispatch(setTeams({ laliga: sortedTeams }));
           } else {
-            setEplFromDb([]);
+            setLaligaFromDb([]);
           }
         } catch (err) {
           console.error("Error parsing teams snapshot:", err);
@@ -100,9 +101,9 @@ function EplLeadInner() {
     if (position === 1) return <Crown size={20} color="#FFD700" />;
     if (position === 2) return <Medal size={20} color="#C0C0C0" />;
     if (position === 3) return <Medal size={20} color="#CD7F32" />;
-    if (position <= 4) return <Star size={20} color="#00f5ff" />;
-    if (position <= 6) return <Target size={20} color="#0084ff" />;
-    if (position >= 18) return <TrendingDown size={20} color="#ef4444" />;
+    if (position === 4) return <Star size={20} color="#ff6b35" />;
+    if (position <= 6) return <Target size={20} color="#f7931e" />;
+    if (position >= 18) return <TrendingDown size={20} color="#dc2626" />;
     return null;
   };
 
@@ -113,24 +114,11 @@ function EplLeadInner() {
     return "";
   };
 
-  const getFormIcon = (result) => {
-    switch (result) {
-      case "W":
-        return <div className="form-win">W</div>;
-      case "D":
-        return <div className="form-draw">D</div>;
-      case "L":
-        return <div className="form-loss">L</div>;
-      default:
-        return null;
-    }
-  };
-
   if (loading) {
     return (
       <LoadingContainer>
         <LoadingSpinner />
-        <LoadingText>Loading Premier League Standings...</LoadingText>
+        <LoadingText>Cargando clasificación de La Liga...</LoadingText>
       </LoadingContainer>
     );
   }
@@ -141,13 +129,13 @@ function EplLeadInner() {
       <Container>
         <BackgroundOrbs>
           <Orb
-            color="radial-gradient(circle, #00f5ff, transparent)"
+            color="radial-gradient(circle, #ff6b35, transparent)"
             duration="20"
             delay="0"
             style={{ top: "10%", left: "10%", width: "300px", height: "300px" }}
           />
           <Orb
-            color="radial-gradient(circle, #0084ff, transparent)"
+            color="radial-gradient(circle, #f7931e, transparent)"
             duration="25"
             delay="5"
             style={{
@@ -158,7 +146,7 @@ function EplLeadInner() {
             }}
           />
           <Orb
-            color="radial-gradient(circle, #38bdf8, transparent)"
+            color="radial-gradient(circle, #fbbf24, transparent)"
             duration="30"
             delay="10"
             style={{
@@ -173,7 +161,7 @@ function EplLeadInner() {
         <Header>
           <Logo>
             <Trophy
-              style={{ color: "#00f5ff", width: "2rem", height: "2rem" }}
+              style={{ color: "#ff6b35", width: "2rem", height: "2rem" }}
             />
             <h1>FutyHub</h1>
           </Logo>
@@ -190,23 +178,23 @@ function EplLeadInner() {
           <BreadcrumbSection>
             <BackButton onClick={() => window.history.back()}>
               <ArrowLeft size={20} />
-              Back to EPL
+              Back to La Liga
             </BackButton>
           </BreadcrumbSection>
 
           <HeroSection>
             <LeagueIconLarge>
-              <EPLLogo src="/images/epl_white.svg" alt="EPL" />
+              <LALIGALogo src="/images/laliga_white.svg" alt="La Liga" />
             </LeagueIconLarge>
-            <Title>Premier League Standings</Title>
+            <Title>La Liga Standings</Title>
             <Subtitle>
-              Standings for the 2025-26 season of the English First Division.
-              Live updates and comprehensive statistics.
+              The official table of the Spanish First Division. The heart of
+              Spanish football in real time.
             </Subtitle>
           </HeroSection>
 
           <LeaderboardSection>
-            <SectionTitle>Current Standings</SectionTitle>
+            <SectionTitle>League Standings</SectionTitle>
 
             <TableContainer>
               <StandingsTable>
@@ -219,14 +207,14 @@ function EplLeadInner() {
                     <th>Draw</th>
                     <th>Loss</th>
                     <th>GF</th>
-                    <th>GA</th>
-                    <th>GD</th>
+                    <th>GC</th>
+                    <th>DG</th>
                     <th>Points</th>
                     <th>Last 5</th>
                   </HeaderRow>
                 </TableHeader>
                 <TableBody>
-                  {eplFromDb.map((team, index) => {
+                  {laligaFromDb.map((team, index) => {
                     const position = index + 1;
                     const goalDifference = (team.gf || 0) - (team.ga || 0);
                     return (
@@ -242,7 +230,7 @@ function EplLeadInner() {
                         <TeamCell>
                           <TeamLogo>
                             <TeamLogoImage
-                              src={team.logo || "/images/epl.svg"}
+                              src={team.logo || "/images/laliga.svg"}
                               alt={team.name}
                             />
                           </TeamLogo>
@@ -286,19 +274,61 @@ function EplLeadInner() {
               <LegendTitle>Table Legend</LegendTitle>
               <LegendGrid>
                 <LegendItem>
-                  <LegendColor color="#00f5ff" />
+                  <LegendColor color="#ecc355" />
                   <span>UEFA Champions League (1-4)</span>
                 </LegendItem>
                 <LegendItem>
-                  <LegendColor color="#0084ff" />
+                  <LegendColor color="#f8692c" />
                   <span>UEFA Europa League (5-6)</span>
                 </LegendItem>
                 <LegendItem>
-                  <LegendColor color="#ef4444" />
+                  <LegendColor color="#dc2626" />
                   <span>Relegation Zone (18-20)</span>
                 </LegendItem>
               </LegendGrid>
             </LegendSection>
+
+            <SpanishStatsSection>
+              <SectionTitle>League Statistics</SectionTitle>
+              <StatsGrid>
+                <StatCard>
+                  <span className="number">{laligaFromDb.length}</span>
+                  <div className="label">Teams</div>
+                </StatCard>
+                <StatCard>
+                  <span className="number">
+                    {laligaFromDb.reduce(
+                      (sum, team) => sum + (team.gf || 0),
+                      0
+                    )}
+                  </span>
+                  <div className="label">Goals Scored</div>
+                </StatCard>
+                <StatCard>
+                  <span className="number">
+                    {Math.round(
+                      (laligaFromDb.reduce(
+                        (sum, team) => sum + (team.gf || 0),
+                        0
+                      ) /
+                        Math.max(
+                          laligaFromDb.reduce(
+                            (sum, team) => sum + (team.played || 0),
+                            0
+                          ),
+                          1
+                        )) *
+                        100
+                    ) / 100}
+                  </span>
+                  <div className="label">Goals per Game</div>
+                </StatCard>
+                <StatCard>
+                  <span className="number">1929</span>
+                  <div className="label">Founded</div>
+                </StatCard>
+              </StatsGrid>
+            </SpanishStatsSection>
           </LeaderboardSection>
         </MainContent>
       </Container>
@@ -306,15 +336,15 @@ function EplLeadInner() {
   );
 }
 
-export function EplLead() {
+export function LaligaLead() {
   return (
     <Provider store={store}>
-      <EplLeadInner />
+      <LaligaLeadInner />
     </Provider>
   );
 }
 
-export default EplLead;
+export default LaligaLead;
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -356,9 +386,14 @@ const spin = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
+const flicker = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+`;
+
 const Container = styled.div`
   min-height: 100vh;
-  background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f172a, #1e293b);
+  background: linear-gradient(-45deg, #2d1b0e, #3d2317, #1a0d00, #2e1a0a);
   background-size: 400% 400%;
   animation: ${gradientShift} 15s ease infinite;
   position: relative;
@@ -391,7 +426,7 @@ const LoadingContainer = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f172a, #1e293b);
+  background: linear-gradient(-45deg, #2d1b0e, #3d2317, #1a0d00, #2e1a0a);
   background-size: 400% 400%;
   animation: ${gradientShift} 15s ease infinite;
 `;
@@ -399,8 +434,8 @@ const LoadingContainer = styled.div`
 const LoadingSpinner = styled.div`
   width: 60px;
   height: 60px;
-  border: 4px solid rgba(0, 245, 255, 0.1);
-  border-left: 4px solid #00f5ff;
+  border: 4px solid rgba(255, 107, 53, 0.1);
+  border-left: 4px solid #ff6b35;
   border-radius: 50%;
   animation: ${spin} 1s linear infinite;
   margin-bottom: 2rem;
@@ -410,6 +445,7 @@ const LoadingText = styled.div`
   color: #cbd5e1;
   font-size: 1.2rem;
   font-weight: 500;
+  font-style: italic;
 `;
 
 const Header = styled.header`
@@ -429,7 +465,7 @@ const Logo = styled.div`
   h1 {
     font-size: 2rem;
     font-weight: 600;
-    background: linear-gradient(135deg, #00f5ff, #0084ff);
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -449,7 +485,7 @@ const Nav = styled.nav`
     position: relative;
 
     &:hover {
-      color: #00f5ff;
+      color: #ff6b35;
       transform: translateY(-2px);
     }
 
@@ -460,12 +496,11 @@ const Nav = styled.nav`
       left: 0;
       width: 0;
       height: 2px;
-      background: linear-gradient(90deg, #00f5ff, #0084ff);
+      background: linear-gradient(90deg, #ff6b35, #f7931e);
       transition: width 0.3s ease;
     }
 
-    &:hover::after,
-    &.active::after {
+    &:hover::after {
       width: 100%;
     }
   }
@@ -500,7 +535,7 @@ const BackButton = styled.button`
 
   &:hover {
     background: rgba(255, 255, 255, 0.15);
-    color: #00f5ff;
+    color: #ff6b35;
     transform: translateX(-3px);
   }
 `;
@@ -521,17 +556,18 @@ const LeagueIconLarge = styled.div`
   margin: 0 auto 2rem;
 `;
 
-const EPLLogo = styled.img`
+const LALIGALogo = styled.img`
   width: 100px;
   height: 100px;
   object-fit: contain;
   filter: brightness(1.2) contrast(1.1);
+  animation: ${flicker} 3s ease-in-out infinite;
 `;
 
 const Title = styled.h1`
   font-size: 3.5rem;
   font-weight: 900;
-  background: linear-gradient(135deg, #00f5ff, #0084ff);
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -544,6 +580,7 @@ const Subtitle = styled.p`
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
+  font-style: italic;
 `;
 
 const LeaderboardSection = styled.section`
@@ -564,11 +601,11 @@ const SectionTitle = styled.h2`
 const TableContainer = styled.div`
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 107, 53, 0.2);
   border-radius: 20px;
   overflow: hidden;
   margin-bottom: 3rem;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 25px 50px rgba(255, 107, 53, 0.1);
 `;
 
 const StandingsTable = styled.table`
@@ -577,7 +614,7 @@ const StandingsTable = styled.table`
 `;
 
 const TableHeader = styled.thead`
-  background: rgba(0, 245, 255, 0.1);
+  background: rgba(255, 107, 53, 0.15);
 `;
 
 const HeaderRow = styled.tr`
@@ -585,11 +622,11 @@ const HeaderRow = styled.tr`
     padding: 1.5rem 1rem;
     text-align: left;
     font-weight: 700;
-    color: #00f5ff;
+    color: #ff6b35;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 2px solid rgba(0, 245, 255, 0.2);
+    border-bottom: 2px solid rgba(255, 107, 53, 0.3);
 
     &:first-child {
       border-radius: 20px 0 0 0;
@@ -603,28 +640,28 @@ const HeaderRow = styled.tr`
 const TableBody = styled.tbody``;
 
 const TeamRow = styled.tr`
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 107, 53, 0.08);
   transition: all 0.3s ease;
   animation: ${fadeInUp} 0.8s ease-out ${(props) => props.delay}s both;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 107, 53, 0.05);
     transform: translateX(5px);
   }
 
   &.champions-league {
-    border-left: 4px solid #00f5ff;
-    background: rgba(0, 245, 255, 0.02);
+    border-left: 4px solid #ecc355;
+    background: rgba(255, 107, 53, 0.03);
   }
 
   &.europa-league {
-    border-left: 4px solid #0084ff;
-    background: rgba(0, 132, 255, 0.02);
+    border-left: 4px solid #f8692c;
+    background: rgba(247, 147, 30, 0.03);
   }
 
   &.relegation {
-    border-left: 4px solid #ef4444;
-    background: rgba(239, 68, 68, 0.02);
+    border-left: 4px solid #dc2626;
+    background: rgba(220, 38, 38, 0.03);
   }
 `;
 
@@ -657,7 +694,7 @@ const TeamLogo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 107, 53, 0.1);
 `;
 
 const TeamLogoImage = styled.img`
@@ -705,7 +742,7 @@ const PointsCell = styled.td`
   text-align: center;
   font-weight: 900;
   font-size: 1.1rem;
-  color: #00f5ff;
+  color: #ff6b35;
   width: 80px;
 `;
 
@@ -743,11 +780,12 @@ const FormBadge = styled.div`
 `;
 
 const LegendSection = styled.div`
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 107, 53, 0.05);
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 107, 53, 0.2);
   border-radius: 15px;
   padding: 2rem;
+  margin-bottom: 3rem;
 `;
 
 const LegendTitle = styled.h3`
@@ -776,4 +814,51 @@ const LegendColor = styled.div`
   height: 20px;
   background: ${(props) => props.color};
   border-radius: 2px;
+`;
+
+const SpanishStatsSection = styled.section`
+  margin: 4rem 0;
+`;
+
+const StatsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+`;
+
+const StatCard = styled.div`
+  text-align: center;
+  background: rgba(255, 107, 53, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  border-radius: 15px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 107, 53, 0.08);
+  }
+
+  .number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+  }
+
+  .label {
+    color: #cbd5e1;
+    font-weight: 500;
+    margin-top: 0.5rem;
+  }
+`;
+
+const StatIcon = styled.div`
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  animation: ${flicker} 2s ease-in-out infinite;
 `;
