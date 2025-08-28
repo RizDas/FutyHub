@@ -82,6 +82,19 @@ export default function Teams() {
       borderColor: "#8b5cf6",
       route: "ligue1",
     },
+    {
+      id: 6,
+      name: "International #Under_Construction",
+      country: "World",
+      season: "2024-25",
+      teams: 10,
+      founded: "Big Bang",
+      icon: "/images/international_white.svg",
+      gradient: "linear-gradient(135deg, #09080c, #0a0217)",
+      bgColor: "rgba(5, 2, 12, 0.25)",
+      borderColor: "#020106",
+      route: "international",
+    },
   ];
 
   return (
