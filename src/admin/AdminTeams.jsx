@@ -1,7 +1,12 @@
 import React from "react";
+import styled from "styled-components";
 
 const AdminTeams = () => {
-  return <div>AdminTeams</div>;
+  return <Container>AdminTeams</Container>;
 };
+
+const Container = styled.div`
+  height: 90vh;
+`;
 
 export default AdminTeams;

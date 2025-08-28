@@ -150,10 +150,10 @@ export default function Teams() {
           </Logo>
           <Nav>
             <a href="/home">Home</a>
-            <a href="/leagues" className="active">
-              Leagues
+            <a href="/leagues">Leagues</a>
+            <a href="/teams" className="active">
+              Teams
             </a>
-            <a href="/teams">Teams</a>
             <a href="/stats">Statistics</a>
             <a href="/about">About</a>
           </Nav>
@@ -267,19 +267,6 @@ const gradientShift = keyframes`
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
-`;
-
-const slideDown = keyframes`
-  from {
-    opacity: 0;
-    max-height: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    max-height: 500px;
-    transform: translateY(0);
-  }
 `;
 
 const Container = styled.div`

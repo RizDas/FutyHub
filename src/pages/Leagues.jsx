@@ -189,7 +189,9 @@ export default function Leagues() {
                 gradient={league.gradient}
                 bgColor={league.bgColor}
                 borderColor={league.borderColor}
-                onClick={() => (window.location.href = `/${league.route}`)}
+                onClick={() =>
+                  (window.location.href = `/${league.route}/leaderboard`)
+                }
                 delay={index * 0.1}
               >
                 <LeagueHeader>
@@ -280,19 +282,6 @@ const gradientShift = keyframes`
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
-`;
-
-const slideDown = keyframes`
-  from {
-    opacity: 0;
-    max-height: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    max-height: 500px;
-    transform: translateY(0);
-  }
 `;
 
 const Container = styled.div`
