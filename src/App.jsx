@@ -14,6 +14,9 @@ import International from "./pages/leagues/International";
 import Managers from "./pages/Managers";
 import EplLead from "./pages/leaderboards/EplLead";
 import LaligaLead from "./pages/leaderboards/LaligaLead";
+import AdminHome from "./admin/AdminHome";
+import AdminLeagues from "./admin/AdminLeagues";
+import AdminTeams from "./admin/AdminTeams";
 
 const App = () => {
   return (
@@ -34,6 +37,9 @@ const App = () => {
           <Route path="/ligue1" element={<Ligue1 />} />
           <Route path="/epl/leaderboard" element={<EplLead />} />
           <Route path="/laliga/leaderboard" element={<LaligaLead />} />
+          <Route path="/futyadmin" element={<AdminHome />} />
+          <Route path="/futyadmin/leagues" element={<AdminLeagues />} />
+          <Route path="/futyadmin/teams" element={<AdminTeams />} />
         </Routes>
         <Footer />
       </Router>
