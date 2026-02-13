@@ -1,4 +1,3 @@
-````md
 # Touchline
 
 Touchline is a football management and competition platform built for fans who want control, not commentary. It enables users to create and manage teams, build dream lineups, and compete in structured auction-based leagues inside private lobbies.
@@ -7,7 +6,7 @@ Unlike preset fantasy systems, Touchline is strategy-first: every league is uniq
 
 ---
 
-## 🚀 Features
+##  Features
 
 - Create and manage football teams
 - Build custom squads and lineups
@@ -20,7 +19,7 @@ Unlike preset fantasy systems, Touchline is strategy-first: every league is uniq
 
 ---
 
-## 🏗 Tech Stack
+## Tech Stack
 
 - **Framework:** Next.js
 - **Frontend:** React + Next.js UI rendering
@@ -31,7 +30,7 @@ Unlike preset fantasy systems, Touchline is strategy-first: every league is uniq
 
 ---
 
-## 📦 Installation
+## Installation
 
 Clone the repository:
 
@@ -48,7 +47,7 @@ npm install
 
 ---
 
-## ▶ Running the Project
+## Running the Project
 
 Start the development server:
 
@@ -64,7 +63,7 @@ http://localhost:3000
 
 ---
 
-## 🛠 Build for Production
+## Build for Production
 
 Build the project:
 
@@ -80,7 +79,7 @@ npm start
 
 ---
 
-## 🔑 Environment Variables
+## Environment Variables
 
 Create a `.env.local` file in the root directory and add the required values:
 
@@ -103,7 +102,7 @@ SOCKET_SERVER_URL=http://localhost:4000
 
 ---
 
-## 🧩 Core Platform Modules
+## Core Platform Modules
 
 ### 1. Teams
 
@@ -127,7 +126,7 @@ Users can compare teams, evaluate squad strength, and improve decision-making us
 
 ---
 
-## 📁 Project Structure (Typical)
+## Project Structure (Typical)
 
 ```bash
 touchline/
@@ -144,7 +143,7 @@ touchline/
 
 ---
 
-## 🎮 Vision
+## Vision
 
 Touchline is designed as a neutral, reliable football competition platform — where teams are built, leagues are run, and outcomes are decided purely by strategy and choices made on the touchline.
 
@@ -152,7 +151,7 @@ No gimmicks. No preset squads. Only smart decisions.
 
 ---
 
-## 📌 Roadmap (Planned)
+## Roadmap (Planned)
 
 * Live auction room UI with real-time bidding updates
 * Custom league rule configuration
@@ -163,7 +162,7 @@ No gimmicks. No preset squads. Only smart decisions.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome.
 
@@ -174,17 +173,14 @@ Contributions are welcome.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License**.
 You are free to use, modify, and distribute it.
 
 ---
 
-## 🧠 Touchline Summary
+## Touchline Summary
 
 Touchline is not fantasy football.
 It is football management competition — auction-based, strategy-driven, and built for serious decision-makers.
-
-```
-```
