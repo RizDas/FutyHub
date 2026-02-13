@@ -17,6 +17,7 @@ import LaligaLead from "./pages/leagues/LaligaLead";
 import AdminHome from "./admin/AdminHome";
 import AdminLeagues from "./admin/AdminLeagues";
 import AdminTeams from "./admin/AdminTeams";
+import NotFound from "./pages/NotFound";
 
 const App = () => {
   return (
@@ -40,6 +41,8 @@ const App = () => {
           <Route path="/futyadmin" element={<AdminHome />} />
           <Route path="/futyadmin/leagues" element={<AdminLeagues />} />
           <Route path="/futyadmin/teams" element={<AdminTeams />} />
+
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
       </Router>
